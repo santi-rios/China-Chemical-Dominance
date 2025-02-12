@@ -1,0 +1,757 @@
+"Country","Year","Value","source","iso3c"
+"China",1996,1.48,"Figure1-a","CHN"
+"China",1997,1.77,"Figure1-a","CHN"
+"China",1998,1.65,"Figure1-a","CHN"
+"China",1999,1.95,"Figure1-a","CHN"
+"China",2000,2.49,"Figure1-a","CHN"
+"China",2001,2.56,"Figure1-a","CHN"
+"China",2002,3.23,"Figure1-a","CHN"
+"China",2003,4.03,"Figure1-a","CHN"
+"China",2004,4.7,"Figure1-a","CHN"
+"China",2005,5.34,"Figure1-a","CHN"
+"China",2006,6.46,"Figure1-a","CHN"
+"China",2007,7.33,"Figure1-a","CHN"
+"China",2008,8.86,"Figure1-a","CHN"
+"China",2009,10.42,"Figure1-a","CHN"
+"China",2010,12.54,"Figure1-a","CHN"
+"China",2011,14.55,"Figure1-a","CHN"
+"China",2012,16.78,"Figure1-a","CHN"
+"China",2013,19.52,"Figure1-a","CHN"
+"China",2014,22.23,"Figure1-a","CHN"
+"China",2015,23.82,"Figure1-a","CHN"
+"China",2016,25.77,"Figure1-a","CHN"
+"China",2017,27.29,"Figure1-a","CHN"
+"China",2018,30.31,"Figure1-a","CHN"
+"China",2019,33.11,"Figure1-a","CHN"
+"China",2020,32.33,"Figure1-a","CHN"
+"China",2021,36.41,"Figure1-a","CHN"
+"China",2022,41.41,"Figure1-a","CHN"
+"US",1996,22.61,"Figure1-a","USA"
+"US",1997,21.86,"Figure1-a","USA"
+"US",1998,22.4,"Figure1-a","USA"
+"US",1999,23.57,"Figure1-a","USA"
+"US",2000,23.21,"Figure1-a","USA"
+"US",2001,23.03,"Figure1-a","USA"
+"US",2002,23.59,"Figure1-a","USA"
+"US",2003,25.05,"Figure1-a","USA"
+"US",2004,24.73,"Figure1-a","USA"
+"US",2005,25.42,"Figure1-a","USA"
+"US",2006,25.19,"Figure1-a","USA"
+"US",2007,24.85,"Figure1-a","USA"
+"US",2008,22.89,"Figure1-a","USA"
+"US",2009,22.02,"Figure1-a","USA"
+"US",2010,20.8,"Figure1-a","USA"
+"US",2011,20.27,"Figure1-a","USA"
+"US",2012,18.65,"Figure1-a","USA"
+"US",2013,17.57,"Figure1-a","USA"
+"US",2014,16.22,"Figure1-a","USA"
+"US",2015,14.63,"Figure1-a","USA"
+"US",2016,14.94,"Figure1-a","USA"
+"US",2017,14.71,"Figure1-a","USA"
+"US",2018,14.37,"Figure1-a","USA"
+"US",2019,12.96,"Figure1-a","USA"
+"US",2020,13.67,"Figure1-a","USA"
+"US",2021,12.36,"Figure1-a","USA"
+"US",2022,10.82,"Figure1-a","USA"
+"India",1996,1.83,"Figure1-a","IND"
+"India",1997,1.96,"Figure1-a","IND"
+"India",1998,1.85,"Figure1-a","IND"
+"India",1999,2.05,"Figure1-a","IND"
+"India",2000,2.25,"Figure1-a","IND"
+"India",2001,2.81,"Figure1-a","IND"
+"India",2002,2.91,"Figure1-a","IND"
+"India",2003,3.14,"Figure1-a","IND"
+"India",2004,3.71,"Figure1-a","IND"
+"India",2005,3.62,"Figure1-a","IND"
+"India",2006,4.26,"Figure1-a","IND"
+"India",2007,4.67,"Figure1-a","IND"
+"India",2008,4.46,"Figure1-a","IND"
+"India",2009,4.99,"Figure1-a","IND"
+"India",2010,5.68,"Figure1-a","IND"
+"India",2011,5.97,"Figure1-a","IND"
+"India",2012,7.09,"Figure1-a","IND"
+"India",2013,7.9,"Figure1-a","IND"
+"India",2014,8.87,"Figure1-a","IND"
+"India",2015,8.5,"Figure1-a","IND"
+"India",2016,8.34,"Figure1-a","IND"
+"India",2017,8.12,"Figure1-a","IND"
+"India",2018,7.07,"Figure1-a","IND"
+"India",2019,7.26,"Figure1-a","IND"
+"India",2020,6.63,"Figure1-a","IND"
+"India",2021,6.35,"Figure1-a","IND"
+"India",2022,7.49,"Figure1-a","IND"
+"Japan",1996,12.39,"Figure1-a","JPN"
+"Japan",1997,12.83,"Figure1-a","JPN"
+"Japan",1998,13.17,"Figure1-a","JPN"
+"Japan",1999,12.4,"Figure1-a","JPN"
+"Japan",2000,14.37,"Figure1-a","JPN"
+"Japan",2001,14.27,"Figure1-a","JPN"
+"Japan",2002,13.34,"Figure1-a","JPN"
+"Japan",2003,12.31,"Figure1-a","JPN"
+"Japan",2004,12.36,"Figure1-a","JPN"
+"Japan",2005,11.53,"Figure1-a","JPN"
+"Japan",2006,11.25,"Figure1-a","JPN"
+"Japan",2007,10.85,"Figure1-a","JPN"
+"Japan",2008,10.56,"Figure1-a","JPN"
+"Japan",2009,10.49,"Figure1-a","JPN"
+"Japan",2010,8.78,"Figure1-a","JPN"
+"Japan",2011,8.73,"Figure1-a","JPN"
+"Japan",2012,9.12,"Figure1-a","JPN"
+"Japan",2013,8.2,"Figure1-a","JPN"
+"Japan",2014,7.54,"Figure1-a","JPN"
+"Japan",2015,7.56,"Figure1-a","JPN"
+"Japan",2016,7.01,"Figure1-a","JPN"
+"Japan",2017,7.01,"Figure1-a","JPN"
+"Japan",2018,6.69,"Figure1-a","JPN"
+"Japan",2019,6.24,"Figure1-a","JPN"
+"Japan",2020,6.34,"Figure1-a","JPN"
+"Japan",2021,5.94,"Figure1-a","JPN"
+"Japan",2022,5.07,"Figure1-a","JPN"
+"Germany",1996,7.54,"Figure1-a","DEU"
+"Germany",1997,8.86,"Figure1-a","DEU"
+"Germany",1998,8.3,"Figure1-a","DEU"
+"Germany",1999,8.11,"Figure1-a","DEU"
+"Germany",2000,7.93,"Figure1-a","DEU"
+"Germany",2001,7.49,"Figure1-a","DEU"
+"Germany",2002,6.76,"Figure1-a","DEU"
+"Germany",2003,6.69,"Figure1-a","DEU"
+"Germany",2004,6.64,"Figure1-a","DEU"
+"Germany",2005,6.55,"Figure1-a","DEU"
+"Germany",2006,6.2,"Figure1-a","DEU"
+"Germany",2007,5.76,"Figure1-a","DEU"
+"Germany",2008,5.94,"Figure1-a","DEU"
+"Germany",2009,5.76,"Figure1-a","DEU"
+"Germany",2010,5.77,"Figure1-a","DEU"
+"Germany",2011,5.94,"Figure1-a","DEU"
+"Germany",2012,6.04,"Figure1-a","DEU"
+"Germany",2013,6.43,"Figure1-a","DEU"
+"Germany",2014,5.9,"Figure1-a","DEU"
+"Germany",2015,6.06,"Figure1-a","DEU"
+"Germany",2016,5.89,"Figure1-a","DEU"
+"Germany",2017,6,"Figure1-a","DEU"
+"Germany",2018,5.89,"Figure1-a","DEU"
+"Germany",2019,5.89,"Figure1-a","DEU"
+"Germany",2020,6,"Figure1-a","DEU"
+"Germany",2021,6.01,"Figure1-a","DEU"
+"Germany",2022,4.95,"Figure1-a","DEU"
+"Russia",1996,1.6,"Figure1-a","RUS"
+"Russia",1997,1.33,"Figure1-a","RUS"
+"Russia",1998,1.48,"Figure1-a","RUS"
+"Russia",1999,1.29,"Figure1-a","RUS"
+"Russia",2000,1.95,"Figure1-a","RUS"
+"Russia",2001,3.59,"Figure1-a","RUS"
+"Russia",2002,3.17,"Figure1-a","RUS"
+"Russia",2003,3.1,"Figure1-a","RUS"
+"Russia",2004,2.96,"Figure1-a","RUS"
+"Russia",2005,3.4,"Figure1-a","RUS"
+"Russia",2006,3.01,"Figure1-a","RUS"
+"Russia",2007,3.29,"Figure1-a","RUS"
+"Russia",2008,2.79,"Figure1-a","RUS"
+"Russia",2009,2.81,"Figure1-a","RUS"
+"Russia",2010,2.54,"Figure1-a","RUS"
+"Russia",2011,2.54,"Figure1-a","RUS"
+"Russia",2012,2.29,"Figure1-a","RUS"
+"Russia",2013,2.15,"Figure1-a","RUS"
+"Russia",2014,2.15,"Figure1-a","RUS"
+"Russia",2015,2.51,"Figure1-a","RUS"
+"Russia",2016,2.65,"Figure1-a","RUS"
+"Russia",2017,2.87,"Figure1-a","RUS"
+"Russia",2018,2.97,"Figure1-a","RUS"
+"Russia",2019,3.07,"Figure1-a","RUS"
+"Russia",2020,3.03,"Figure1-a","RUS"
+"Russia",2021,2.95,"Figure1-a","RUS"
+"Russia",2022,2.88,"Figure1-a","RUS"
+"UK",1996,4.24,"Figure1-a","GBR"
+"UK",1997,4.11,"Figure1-a","GBR"
+"UK",1998,4.17,"Figure1-a","GBR"
+"UK",1999,4.17,"Figure1-a","GBR"
+"UK",2000,6.36,"Figure1-a","GBR"
+"UK",2001,5.92,"Figure1-a","GBR"
+"UK",2002,5.14,"Figure1-a","GBR"
+"UK",2003,5.31,"Figure1-a","GBR"
+"UK",2004,5.18,"Figure1-a","GBR"
+"UK",2005,5.03,"Figure1-a","GBR"
+"UK",2006,5.06,"Figure1-a","GBR"
+"UK",2007,5.13,"Figure1-a","GBR"
+"UK",2008,4.97,"Figure1-a","GBR"
+"UK",2009,4.66,"Figure1-a","GBR"
+"UK",2010,4.49,"Figure1-a","GBR"
+"UK",2011,4.59,"Figure1-a","GBR"
+"UK",2012,4.28,"Figure1-a","GBR"
+"UK",2013,4.1,"Figure1-a","GBR"
+"UK",2014,3.84,"Figure1-a","GBR"
+"UK",2015,3.93,"Figure1-a","GBR"
+"UK",2016,3.99,"Figure1-a","GBR"
+"UK",2017,3.82,"Figure1-a","GBR"
+"UK",2018,3.4,"Figure1-a","GBR"
+"UK",2019,3.29,"Figure1-a","GBR"
+"UK",2020,3.17,"Figure1-a","GBR"
+"UK",2021,2.74,"Figure1-a","GBR"
+"UK",2022,2.71,"Figure1-a","GBR"
+"France",1996,5.34,"Figure1-a","FRA"
+"France",1997,5.58,"Figure1-a","FRA"
+"France",1998,5.56,"Figure1-a","FRA"
+"France",1999,5.53,"Figure1-a","FRA"
+"France",2000,5.82,"Figure1-a","FRA"
+"France",2001,5.39,"Figure1-a","FRA"
+"France",2002,5.22,"Figure1-a","FRA"
+"France",2003,4.95,"Figure1-a","FRA"
+"France",2004,4.43,"Figure1-a","FRA"
+"France",2005,4.57,"Figure1-a","FRA"
+"France",2006,4.8,"Figure1-a","FRA"
+"France",2007,4.79,"Figure1-a","FRA"
+"France",2008,4.45,"Figure1-a","FRA"
+"France",2009,4.55,"Figure1-a","FRA"
+"France",2010,4.29,"Figure1-a","FRA"
+"France",2011,4.2,"Figure1-a","FRA"
+"France",2012,4.1,"Figure1-a","FRA"
+"France",2013,3.97,"Figure1-a","FRA"
+"France",2014,3.71,"Figure1-a","FRA"
+"France",2015,3.38,"Figure1-a","FRA"
+"France",2016,3.34,"Figure1-a","FRA"
+"France",2017,3.1,"Figure1-a","FRA"
+"France",2018,3.03,"Figure1-a","FRA"
+"France",2019,2.54,"Figure1-a","FRA"
+"France",2020,2.67,"Figure1-a","FRA"
+"France",2021,2.55,"Figure1-a","FRA"
+"France",2022,2.25,"Figure1-a","FRA"
+"China w/o US",1996,1.43,"Figure1-a","CHN"
+"China w/o US",1997,1.73,"Figure1-a","CHN"
+"China w/o US",1998,1.61,"Figure1-a","CHN"
+"China w/o US",1999,1.9,"Figure1-a","CHN"
+"China w/o US",2000,2.45,"Figure1-a","CHN"
+"China w/o US",2001,2.49,"Figure1-a","CHN"
+"China w/o US",2002,3.15,"Figure1-a","CHN"
+"China w/o US",2003,3.9,"Figure1-a","CHN"
+"China w/o US",2004,4.55,"Figure1-a","CHN"
+"China w/o US",2005,5.19,"Figure1-a","CHN"
+"China w/o US",2006,6.23,"Figure1-a","CHN"
+"China w/o US",2007,7.02,"Figure1-a","CHN"
+"China w/o US",2008,8.26,"Figure1-a","CHN"
+"China w/o US",2009,9.81,"Figure1-a","CHN"
+"China w/o US",2010,11.62,"Figure1-a","CHN"
+"China w/o US",2011,13.79,"Figure1-a","CHN"
+"China w/o US",2012,15.87,"Figure1-a","CHN"
+"China w/o US",2013,18.51,"Figure1-a","CHN"
+"China w/o US",2014,21.01,"Figure1-a","CHN"
+"China w/o US",2015,22.51,"Figure1-a","CHN"
+"China w/o US",2016,24.18,"Figure1-a","CHN"
+"China w/o US",2017,25.47,"Figure1-a","CHN"
+"China w/o US",2018,28.46,"Figure1-a","CHN"
+"China w/o US",2019,31.15,"Figure1-a","CHN"
+"China w/o US",2020,30.35,"Figure1-a","CHN"
+"China w/o US",2021,34.72,"Figure1-a","CHN"
+"China w/o US",2022,39.5,"Figure1-a","CHN"
+"US w/o China",1996,22.57,"Figure1-a",NA
+"US w/o China",1997,21.83,"Figure1-a",NA
+"US w/o China",1998,22.36,"Figure1-a",NA
+"US w/o China",1999,23.52,"Figure1-a",NA
+"US w/o China",2000,23.17,"Figure1-a",NA
+"US w/o China",2001,22.96,"Figure1-a",NA
+"US w/o China",2002,23.51,"Figure1-a",NA
+"US w/o China",2003,24.92,"Figure1-a",NA
+"US w/o China",2004,24.57,"Figure1-a",NA
+"US w/o China",2005,25.28,"Figure1-a",NA
+"US w/o China",2006,24.97,"Figure1-a",NA
+"US w/o China",2007,24.53,"Figure1-a",NA
+"US w/o China",2008,22.29,"Figure1-a",NA
+"US w/o China",2009,21.42,"Figure1-a",NA
+"US w/o China",2010,19.88,"Figure1-a",NA
+"US w/o China",2011,19.52,"Figure1-a",NA
+"US w/o China",2012,17.74,"Figure1-a",NA
+"US w/o China",2013,16.56,"Figure1-a",NA
+"US w/o China",2014,15,"Figure1-a",NA
+"US w/o China",2015,13.32,"Figure1-a",NA
+"US w/o China",2016,13.35,"Figure1-a",NA
+"US w/o China",2017,12.89,"Figure1-a",NA
+"US w/o China",2018,12.52,"Figure1-a",NA
+"US w/o China",2019,11,"Figure1-a",NA
+"US w/o China",2020,11.7,"Figure1-a",NA
+"US w/o China",2021,10.66,"Figure1-a",NA
+"US w/o China",2022,8.91,"Figure1-a",NA
+"USA alone",1996,21.91,"Figure1-a","USA"
+"USA alone",1997,21.15,"Figure1-a","USA"
+"USA alone",1998,21.54,"Figure1-a","USA"
+"USA alone",1999,22.68,"Figure1-a","USA"
+"USA alone",2000,22.46,"Figure1-a","USA"
+"USA alone",2001,21.91,"Figure1-a","USA"
+"USA alone",2002,22.58,"Figure1-a","USA"
+"USA alone",2003,23.88,"Figure1-a","USA"
+"USA alone",2004,23.51,"Figure1-a","USA"
+"USA alone",2005,24.37,"Figure1-a","USA"
+"USA alone",2006,24.06,"Figure1-a","USA"
+"USA alone",2007,23.49,"Figure1-a","USA"
+"USA alone",2008,21.28,"Figure1-a","USA"
+"USA alone",2009,20,"Figure1-a","USA"
+"USA alone",2010,18.34,"Figure1-a","USA"
+"USA alone",2011,18.02,"Figure1-a","USA"
+"USA alone",2012,16.65,"Figure1-a","USA"
+"USA alone",2013,15.51,"Figure1-a","USA"
+"USA alone",2014,14.04,"Figure1-a","USA"
+"USA alone",2015,12.43,"Figure1-a","USA"
+"USA alone",2016,12.63,"Figure1-a","USA"
+"USA alone",2017,12.33,"Figure1-a","USA"
+"USA alone",2018,12.05,"Figure1-a","USA"
+"USA alone",2019,10.69,"Figure1-a","USA"
+"USA alone",2020,11.02,"Figure1-a","USA"
+"USA alone",2021,10.04,"Figure1-a","USA"
+"USA alone",2022,8.56,"Figure1-a","USA"
+"CN alone",1996,1.38,"Figure1-a",NA
+"CN alone",1997,1.67,"Figure1-a",NA
+"CN alone",1998,1.56,"Figure1-a",NA
+"CN alone",1999,1.81,"Figure1-a",NA
+"CN alone",2000,2.32,"Figure1-a",NA
+"CN alone",2001,2.35,"Figure1-a",NA
+"CN alone",2002,3.04,"Figure1-a",NA
+"CN alone",2003,3.78,"Figure1-a",NA
+"CN alone",2004,4.42,"Figure1-a",NA
+"CN alone",2005,5.03,"Figure1-a",NA
+"CN alone",2006,6.1,"Figure1-a",NA
+"CN alone",2007,6.94,"Figure1-a",NA
+"CN alone",2008,8.14,"Figure1-a",NA
+"CN alone",2009,9.61,"Figure1-a",NA
+"CN alone",2010,11.47,"Figure1-a",NA
+"CN alone",2011,13.46,"Figure1-a",NA
+"CN alone",2012,15.51,"Figure1-a",NA
+"CN alone",2013,18.28,"Figure1-a",NA
+"CN alone",2014,20.68,"Figure1-a",NA
+"CN alone",2015,22.21,"Figure1-a",NA
+"CN alone",2016,24.03,"Figure1-a",NA
+"CN alone",2017,25.04,"Figure1-a",NA
+"CN alone",2018,27.97,"Figure1-a",NA
+"CN alone",2019,30.74,"Figure1-a",NA
+"CN alone",2020,29.59,"Figure1-a",NA
+"CN alone",2021,34.05,"Figure1-a",NA
+"CN alone",2022,38.58,"Figure1-a",NA
+"China-US",1996,0.02,"Figure1-b","CHN"
+"China-US",1997,0.03,"Figure1-b","CHN"
+"China-US",1998,0.04,"Figure1-b","CHN"
+"China-US",1999,0.04,"Figure1-b","CHN"
+"China-US",2000,0.03,"Figure1-b","CHN"
+"China-US",2001,0.06,"Figure1-b","CHN"
+"China-US",2002,0.07,"Figure1-b","CHN"
+"China-US",2003,0.11,"Figure1-b","CHN"
+"China-US",2004,0.13,"Figure1-b","CHN"
+"China-US",2005,0.13,"Figure1-b","CHN"
+"China-US",2006,0.2,"Figure1-b","CHN"
+"China-US",2007,0.3,"Figure1-b","CHN"
+"China-US",2008,0.5,"Figure1-b","CHN"
+"China-US",2009,0.54,"Figure1-b","CHN"
+"China-US",2010,0.8,"Figure1-b","CHN"
+"China-US",2011,0.66,"Figure1-b","CHN"
+"China-US",2012,0.78,"Figure1-b","CHN"
+"China-US",2013,0.93,"Figure1-b","CHN"
+"China-US",2014,1.08,"Figure1-b","CHN"
+"China-US",2015,1.11,"Figure1-b","CHN"
+"China-US",2016,1.48,"Figure1-b","CHN"
+"China-US",2017,1.59,"Figure1-b","CHN"
+"China-US",2018,1.46,"Figure1-b","CHN"
+"China-US",2019,1.5,"Figure1-b","CHN"
+"China-US",2020,1.62,"Figure1-b","CHN"
+"China-US",2021,1.3,"Figure1-b","CHN"
+"China-US",2022,1.56,"Figure1-b","CHN"
+"UK-US",1996,0.16,"Figure1-b",NA
+"UK-US",1997,0.15,"Figure1-b",NA
+"UK-US",1998,0.23,"Figure1-b",NA
+"UK-US",1999,0.25,"Figure1-b",NA
+"UK-US",2000,0.12,"Figure1-b",NA
+"UK-US",2001,0.22,"Figure1-b",NA
+"UK-US",2002,0.32,"Figure1-b",NA
+"UK-US",2003,0.27,"Figure1-b",NA
+"UK-US",2004,0.19,"Figure1-b",NA
+"UK-US",2005,0.22,"Figure1-b",NA
+"UK-US",2006,0.23,"Figure1-b",NA
+"UK-US",2007,0.31,"Figure1-b",NA
+"UK-US",2008,0.36,"Figure1-b",NA
+"UK-US",2009,0.38,"Figure1-b",NA
+"UK-US",2010,0.49,"Figure1-b",NA
+"UK-US",2011,0.47,"Figure1-b",NA
+"UK-US",2012,0.43,"Figure1-b",NA
+"UK-US",2013,0.31,"Figure1-b",NA
+"UK-US",2014,0.36,"Figure1-b",NA
+"UK-US",2015,0.41,"Figure1-b",NA
+"UK-US",2016,0.22,"Figure1-b",NA
+"UK-US",2017,0.31,"Figure1-b",NA
+"UK-US",2018,0.34,"Figure1-b",NA
+"UK-US",2019,0.41,"Figure1-b",NA
+"UK-US",2020,0.31,"Figure1-b",NA
+"UK-US",2021,0.31,"Figure1-b",NA
+"UK-US",2022,0.33,"Figure1-b",NA
+"Germany-US",1996,0.14,"Figure1-b","DEU"
+"Germany-US",1997,0.16,"Figure1-b","DEU"
+"Germany-US",1998,0.16,"Figure1-b","DEU"
+"Germany-US",1999,0.19,"Figure1-b","DEU"
+"Germany-US",2000,0.16,"Figure1-b","DEU"
+"Germany-US",2001,0.3,"Figure1-b","DEU"
+"Germany-US",2002,0.16,"Figure1-b","DEU"
+"Germany-US",2003,0.16,"Figure1-b","DEU"
+"Germany-US",2004,0.18,"Figure1-b","DEU"
+"Germany-US",2005,0.16,"Figure1-b","DEU"
+"Germany-US",2006,0.11,"Figure1-b","DEU"
+"Germany-US",2007,0.19,"Figure1-b","DEU"
+"Germany-US",2008,0.18,"Figure1-b","DEU"
+"Germany-US",2009,0.22,"Figure1-b","DEU"
+"Germany-US",2010,0.38,"Figure1-b","DEU"
+"Germany-US",2011,0.35,"Figure1-b","DEU"
+"Germany-US",2012,0.27,"Figure1-b","DEU"
+"Germany-US",2013,0.24,"Figure1-b","DEU"
+"Germany-US",2014,0.25,"Figure1-b","DEU"
+"Germany-US",2015,0.19,"Figure1-b","DEU"
+"Germany-US",2016,0.25,"Figure1-b","DEU"
+"Germany-US",2017,0.27,"Figure1-b","DEU"
+"Germany-US",2018,0.24,"Figure1-b","DEU"
+"Germany-US",2019,0.28,"Figure1-b","DEU"
+"Germany-US",2020,0.26,"Figure1-b","DEU"
+"Germany-US",2021,0.42,"Figure1-b","DEU"
+"Germany-US",2022,0.38,"Figure1-b","DEU"
+"Japan-US",1996,0.12,"Figure1-b","JPN"
+"Japan-US",1997,0.21,"Figure1-b","JPN"
+"Japan-US",1998,0.16,"Figure1-b","JPN"
+"Japan-US",1999,0.17,"Figure1-b","JPN"
+"Japan-US",2000,0.16,"Figure1-b","JPN"
+"Japan-US",2001,0.38,"Figure1-b","JPN"
+"Japan-US",2002,0.2,"Figure1-b","JPN"
+"Japan-US",2003,0.3,"Figure1-b","JPN"
+"Japan-US",2004,0.21,"Figure1-b","JPN"
+"Japan-US",2005,0.17,"Figure1-b","JPN"
+"Japan-US",2006,0.33,"Figure1-b","JPN"
+"Japan-US",2007,0.22,"Figure1-b","JPN"
+"Japan-US",2008,0.29,"Figure1-b","JPN"
+"Japan-US",2009,0.43,"Figure1-b","JPN"
+"Japan-US",2010,0.22,"Figure1-b","JPN"
+"Japan-US",2011,0.36,"Figure1-b","JPN"
+"Japan-US",2012,0.21,"Figure1-b","JPN"
+"Japan-US",2013,0.28,"Figure1-b","JPN"
+"Japan-US",2014,0.22,"Figure1-b","JPN"
+"Japan-US",2015,0.22,"Figure1-b","JPN"
+"Japan-US",2016,0.21,"Figure1-b","JPN"
+"Japan-US",2017,0.3,"Figure1-b","JPN"
+"Japan-US",2018,0.22,"Figure1-b","JPN"
+"Japan-US",2019,0.22,"Figure1-b","JPN"
+"Japan-US",2020,0.22,"Figure1-b","JPN"
+"Japan-US",2021,0.21,"Figure1-b","JPN"
+"Japan-US",2022,0.09,"Figure1-b","JPN"
+"India-US",1996,0.07,"Figure1-b","IND"
+"India-US",1997,0.07,"Figure1-b","IND"
+"India-US",1998,0.04,"Figure1-b","IND"
+"India-US",1999,0.06,"Figure1-b","IND"
+"India-US",2000,0.1,"Figure1-b","IND"
+"India-US",2001,0.08,"Figure1-b","IND"
+"India-US",2002,0.12,"Figure1-b","IND"
+"India-US",2003,0.15,"Figure1-b","IND"
+"India-US",2004,0.13,"Figure1-b","IND"
+"India-US",2005,0.1,"Figure1-b","IND"
+"India-US",2006,0.13,"Figure1-b","IND"
+"India-US",2007,0.14,"Figure1-b","IND"
+"India-US",2008,0.14,"Figure1-b","IND"
+"India-US",2009,0.21,"Figure1-b","IND"
+"India-US",2010,0.2,"Figure1-b","IND"
+"India-US",2011,0.3,"Figure1-b","IND"
+"India-US",2012,0.33,"Figure1-b","IND"
+"India-US",2013,0.27,"Figure1-b","IND"
+"India-US",2014,0.34,"Figure1-b","IND"
+"India-US",2015,0.25,"Figure1-b","IND"
+"India-US",2016,0.33,"Figure1-b","IND"
+"India-US",2017,0.33,"Figure1-b","IND"
+"India-US",2018,0.27,"Figure1-b","IND"
+"India-US",2019,0.25,"Figure1-b","IND"
+"India-US",2020,0.39,"Figure1-b","IND"
+"India-US",2021,0.32,"Figure1-b","IND"
+"India-US",2022,0.3,"Figure1-b","IND"
+"Canada-US",1996,0.11,"Figure1-b","CAN"
+"Canada-US",1997,0.1,"Figure1-b","CAN"
+"Canada-US",1998,0.07,"Figure1-b","CAN"
+"Canada-US",1999,0.25,"Figure1-b","CAN"
+"Canada-US",2000,0.12,"Figure1-b","CAN"
+"Canada-US",2001,0.15,"Figure1-b","CAN"
+"Canada-US",2002,0.09,"Figure1-b","CAN"
+"Canada-US",2003,0.22,"Figure1-b","CAN"
+"Canada-US",2004,0.16,"Figure1-b","CAN"
+"Canada-US",2005,0.17,"Figure1-b","CAN"
+"Canada-US",2006,0.2,"Figure1-b","CAN"
+"Canada-US",2007,0.24,"Figure1-b","CAN"
+"Canada-US",2008,0.21,"Figure1-b","CAN"
+"Canada-US",2009,0.21,"Figure1-b","CAN"
+"Canada-US",2010,0.3,"Figure1-b","CAN"
+"Canada-US",2011,0.32,"Figure1-b","CAN"
+"Canada-US",2012,0.23,"Figure1-b","CAN"
+"Canada-US",2013,0.22,"Figure1-b","CAN"
+"Canada-US",2014,0.3,"Figure1-b","CAN"
+"Canada-US",2015,0.22,"Figure1-b","CAN"
+"Canada-US",2016,0.22,"Figure1-b","CAN"
+"Canada-US",2017,0.21,"Figure1-b","CAN"
+"Canada-US",2018,0.16,"Figure1-b","CAN"
+"Canada-US",2019,0.18,"Figure1-b","CAN"
+"Canada-US",2020,0.24,"Figure1-b","CAN"
+"Canada-US",2021,0.15,"Figure1-b","CAN"
+"Canada-US",2022,0.23,"Figure1-b","CAN"
+"Italy-US",1996,0.11,"Figure1-b","ITA"
+"Italy-US",1997,0.08,"Figure1-b","ITA"
+"Italy-US",1998,0.09,"Figure1-b","ITA"
+"Italy-US",1999,0.06,"Figure1-b","ITA"
+"Italy-US",2000,0.07,"Figure1-b","ITA"
+"Italy-US",2001,0.08,"Figure1-b","ITA"
+"Italy-US",2002,0.1,"Figure1-b","ITA"
+"Italy-US",2003,0.14,"Figure1-b","ITA"
+"Italy-US",2004,0.12,"Figure1-b","ITA"
+"Italy-US",2005,0.13,"Figure1-b","ITA"
+"Italy-US",2006,0.07,"Figure1-b","ITA"
+"Italy-US",2007,0.12,"Figure1-b","ITA"
+"Italy-US",2008,0.13,"Figure1-b","ITA"
+"Italy-US",2009,0.28,"Figure1-b","ITA"
+"Italy-US",2010,0.2,"Figure1-b","ITA"
+"Italy-US",2011,0.18,"Figure1-b","ITA"
+"Italy-US",2012,0.28,"Figure1-b","ITA"
+"Italy-US",2013,0.19,"Figure1-b","ITA"
+"Italy-US",2014,0.15,"Figure1-b","ITA"
+"Italy-US",2015,0.19,"Figure1-b","ITA"
+"Italy-US",2016,0.23,"Figure1-b","ITA"
+"Italy-US",2017,0.13,"Figure1-b","ITA"
+"Italy-US",2018,0.15,"Figure1-b","ITA"
+"Italy-US",2019,0.11,"Figure1-b","ITA"
+"Italy-US",2020,0.16,"Figure1-b","ITA"
+"Italy-US",2021,0.09,"Figure1-b","ITA"
+"Italy-US",2022,0.1,"Figure1-b","ITA"
+"China-Japan",1996,0.04,"Figure1-b",NA
+"China-Japan",1997,0.03,"Figure1-b",NA
+"China-Japan",1998,0.03,"Figure1-b",NA
+"China-Japan",1999,0.03,"Figure1-b",NA
+"China-Japan",2000,0.06,"Figure1-b",NA
+"China-Japan",2001,0.08,"Figure1-b",NA
+"China-Japan",2002,0.09,"Figure1-b",NA
+"China-Japan",2003,0.08,"Figure1-b",NA
+"China-Japan",2004,0.11,"Figure1-b",NA
+"China-Japan",2005,0.09,"Figure1-b",NA
+"China-Japan",2006,0.09,"Figure1-b",NA
+"China-Japan",2007,0.1,"Figure1-b",NA
+"China-Japan",2008,0.14,"Figure1-b",NA
+"China-Japan",2009,0.14,"Figure1-b",NA
+"China-Japan",2010,0.14,"Figure1-b",NA
+"China-Japan",2011,0.17,"Figure1-b",NA
+"China-Japan",2012,0.15,"Figure1-b",NA
+"China-Japan",2013,0.14,"Figure1-b",NA
+"China-Japan",2014,0.2,"Figure1-b",NA
+"China-Japan",2015,0.13,"Figure1-b",NA
+"China-Japan",2016,0.17,"Figure1-b",NA
+"China-Japan",2017,0.13,"Figure1-b",NA
+"China-Japan",2018,0.18,"Figure1-b",NA
+"China-Japan",2019,0.17,"Figure1-b",NA
+"China-Japan",2020,0.27,"Figure1-b",NA
+"China-Japan",2021,0.25,"Figure1-b",NA
+"China-Japan",2022,0.24,"Figure1-b",NA
+"CN alone/CN",1996,93.76,"Figure1-c",NA
+"CN alone/CN",1997,94.69,"Figure1-c",NA
+"CN alone/CN",1998,94.37,"Figure1-c",NA
+"CN alone/CN",1999,92.55,"Figure1-c",NA
+"CN alone/CN",2000,93.08,"Figure1-c",NA
+"CN alone/CN",2001,91.69,"Figure1-c",NA
+"CN alone/CN",2002,94.02,"Figure1-c",NA
+"CN alone/CN",2003,93.78,"Figure1-c",NA
+"CN alone/CN",2004,93.96,"Figure1-c",NA
+"CN alone/CN",2005,94.14,"Figure1-c",NA
+"CN alone/CN",2006,94.45,"Figure1-c",NA
+"CN alone/CN",2007,94.61,"Figure1-c",NA
+"CN alone/CN",2008,91.92,"Figure1-c",NA
+"CN alone/CN",2009,92.26,"Figure1-c",NA
+"CN alone/CN",2010,91.46,"Figure1-c",NA
+"CN alone/CN",2011,92.53,"Figure1-c",NA
+"CN alone/CN",2012,92.39,"Figure1-c",NA
+"CN alone/CN",2013,93.65,"Figure1-c",NA
+"CN alone/CN",2014,92.99,"Figure1-c",NA
+"CN alone/CN",2015,93.23,"Figure1-c",NA
+"CN alone/CN",2016,93.26,"Figure1-c",NA
+"CN alone/CN",2017,91.75,"Figure1-c",NA
+"CN alone/CN",2018,92.27,"Figure1-c",NA
+"CN alone/CN",2019,92.85,"Figure1-c",NA
+"CN alone/CN",2020,91.51,"Figure1-c",NA
+"CN alone/CN",2021,93.51,"Figure1-c",NA
+"CN alone/CN",2022,93.19,"Figure1-c",NA
+"US alone/US",1996,96.87,"Figure1-c","USA"
+"US alone/US",1997,96.76,"Figure1-c","USA"
+"US alone/US",1998,96.16,"Figure1-c","USA"
+"US alone/US",1999,96.23,"Figure1-c","USA"
+"US alone/US",2000,96.74,"Figure1-c","USA"
+"US alone/US",2001,95.16,"Figure1-c","USA"
+"US alone/US",2002,95.74,"Figure1-c","USA"
+"US alone/US",2003,95.34,"Figure1-c","USA"
+"US alone/US",2004,95.05,"Figure1-c","USA"
+"US alone/US",2005,95.84,"Figure1-c","USA"
+"US alone/US",2006,95.52,"Figure1-c","USA"
+"US alone/US",2007,94.54,"Figure1-c","USA"
+"US alone/US",2008,92.95,"Figure1-c","USA"
+"US alone/US",2009,90.79,"Figure1-c","USA"
+"US alone/US",2010,88.19,"Figure1-c","USA"
+"US alone/US",2011,88.86,"Figure1-c","USA"
+"US alone/US",2012,89.29,"Figure1-c","USA"
+"US alone/US",2013,88.26,"Figure1-c","USA"
+"US alone/US",2014,86.57,"Figure1-c","USA"
+"US alone/US",2015,85.01,"Figure1-c","USA"
+"US alone/US",2016,84.53,"Figure1-c","USA"
+"US alone/US",2017,83.84,"Figure1-c","USA"
+"US alone/US",2018,83.84,"Figure1-c","USA"
+"US alone/US",2019,82.49,"Figure1-c","USA"
+"US alone/US",2020,80.57,"Figure1-c","USA"
+"US alone/US",2021,81.29,"Figure1-c","USA"
+"US alone/US",2022,79.15,"Figure1-c","USA"
+"CN-US collab/CN",1996,0.03,"Figure1-c",NA
+"CN-US collab/CN",1997,0.02,"Figure1-c",NA
+"CN-US collab/CN",1998,0.03,"Figure1-c",NA
+"CN-US collab/CN",1999,0.03,"Figure1-c",NA
+"CN-US collab/CN",2000,0.02,"Figure1-c",NA
+"CN-US collab/CN",2001,0.03,"Figure1-c",NA
+"CN-US collab/CN",2002,0.02,"Figure1-c",NA
+"CN-US collab/CN",2003,0.03,"Figure1-c",NA
+"CN-US collab/CN",2004,0.03,"Figure1-c",NA
+"CN-US collab/CN",2005,0.03,"Figure1-c",NA
+"CN-US collab/CN",2006,0.03,"Figure1-c",NA
+"CN-US collab/CN",2007,0.04,"Figure1-c",NA
+"CN-US collab/CN",2008,0.07,"Figure1-c",NA
+"CN-US collab/CN",2009,0.06,"Figure1-c",NA
+"CN-US collab/CN",2010,0.07,"Figure1-c",NA
+"CN-US collab/CN",2011,0.05,"Figure1-c",NA
+"CN-US collab/CN",2012,0.05,"Figure1-c",NA
+"CN-US collab/CN",2013,0.05,"Figure1-c",NA
+"CN-US collab/CN",2014,0.06,"Figure1-c",NA
+"CN-US collab/CN",2015,0.05,"Figure1-c",NA
+"CN-US collab/CN",2016,0.06,"Figure1-c",NA
+"CN-US collab/CN",2017,0.07,"Figure1-c",NA
+"CN-US collab/CN",2018,0.06,"Figure1-c",NA
+"CN-US collab/CN",2019,0.06,"Figure1-c",NA
+"CN-US collab/CN",2020,0.06,"Figure1-c",NA
+"CN-US collab/CN",2021,0.05,"Figure1-c",NA
+"CN-US collab/CN",2022,0.05,"Figure1-c",NA
+"CN-US collab/US",1996,0,"Figure1-c",NA
+"CN-US collab/US",1997,0,"Figure1-c",NA
+"CN-US collab/US",1998,0,"Figure1-c",NA
+"CN-US collab/US",1999,0,"Figure1-c",NA
+"CN-US collab/US",2000,0,"Figure1-c",NA
+"CN-US collab/US",2001,0,"Figure1-c",NA
+"CN-US collab/US",2002,0,"Figure1-c",NA
+"CN-US collab/US",2003,0.01,"Figure1-c",NA
+"CN-US collab/US",2004,0.01,"Figure1-c",NA
+"CN-US collab/US",2005,0.01,"Figure1-c",NA
+"CN-US collab/US",2006,0.01,"Figure1-c",NA
+"CN-US collab/US",2007,0.01,"Figure1-c",NA
+"CN-US collab/US",2008,0.03,"Figure1-c",NA
+"CN-US collab/US",2009,0.03,"Figure1-c",NA
+"CN-US collab/US",2010,0.04,"Figure1-c",NA
+"CN-US collab/US",2011,0.04,"Figure1-c",NA
+"CN-US collab/US",2012,0.05,"Figure1-c",NA
+"CN-US collab/US",2013,0.06,"Figure1-c",NA
+"CN-US collab/US",2014,0.08,"Figure1-c",NA
+"CN-US collab/US",2015,0.09,"Figure1-c",NA
+"CN-US collab/US",2016,0.11,"Figure1-c",NA
+"CN-US collab/US",2017,0.12,"Figure1-c",NA
+"CN-US collab/US",2018,0.13,"Figure1-c",NA
+"CN-US collab/US",2019,0.15,"Figure1-c",NA
+"CN-US collab/US",2020,0.14,"Figure1-c",NA
+"CN-US collab/US",2021,0.14,"Figure1-c",NA
+"CN-US collab/US",2022,0.18,"Figure1-c",NA
+"US",1996,2.57,"Figure1-d","USA"
+"US",1997,3.2,"Figure1-d","USA"
+"US",1998,3.27,"Figure1-d","USA"
+"US",1999,3.59,"Figure1-d","USA"
+"US",2000,2.93,"Figure1-d","USA"
+"US",2001,-0.04,"Figure1-d","USA"
+"US",2002,0.76,"Figure1-d","USA"
+"US",2003,1.92,"Figure1-d","USA"
+"US",2004,2.89,"Figure1-d","USA"
+"US",2005,2.53,"Figure1-d","USA"
+"US",2006,1.8,"Figure1-d","USA"
+"US",2007,1.04,"Figure1-d","USA"
+"US",2008,-0.83,"Figure1-d","USA"
+"US",2009,-3.43,"Figure1-d","USA"
+"US",2010,1.85,"Figure1-d","USA"
+"US",2011,0.83,"Figure1-d","USA"
+"US",2012,1.54,"Figure1-d","USA"
+"US",2013,1.41,"Figure1-d","USA"
+"US",2014,1.77,"Figure1-d","USA"
+"US",2015,2.19,"Figure1-d","USA"
+"US",2016,1.08,"Figure1-d","USA"
+"US",2017,1.81,"Figure1-d","USA"
+"US",2018,2.43,"Figure1-d","USA"
+"US",2019,2,"Figure1-d","USA"
+"US",2020,-3.16,"Figure1-d","USA"
+"US",2021,5.63,"Figure1-d","USA"
+"US",2022,1.56,"Figure1-d","USA"
+"US",2023,2.04,"Figure1-d","USA"
+"CN",1996,8.78,"Figure1-d",NA
+"CN",1997,8.12,"Figure1-d",NA
+"CN",1998,6.82,"Figure1-d",NA
+"CN",1999,6.73,"Figure1-d",NA
+"CN",2000,7.64,"Figure1-d",NA
+"CN",2001,7.55,"Figure1-d",NA
+"CN",2002,8.4,"Figure1-d",NA
+"CN",2003,9.35,"Figure1-d",NA
+"CN",2004,9.46,"Figure1-d",NA
+"CN",2005,10.74,"Figure1-d",NA
+"CN",2006,12.09,"Figure1-d",NA
+"CN",2007,13.64,"Figure1-d",NA
+"CN",2008,9.09,"Figure1-d",NA
+"CN",2009,8.86,"Figure1-d",NA
+"CN",2010,10.1,"Figure1-d",NA
+"CN",2011,8.95,"Figure1-d",NA
+"CN",2012,7.13,"Figure1-d",NA
+"CN",2013,7.05,"Figure1-d",NA
+"CN",2014,6.75,"Figure1-d",NA
+"CN",2015,6.42,"Figure1-d",NA
+"CN",2016,6.24,"Figure1-d",NA
+"CN",2017,6.3,"Figure1-d",NA
+"CN",2018,6.25,"Figure1-d",NA
+"CN",2019,5.58,"Figure1-d",NA
+"CN",2020,2,"Figure1-d",NA
+"CN",2021,8.35,"Figure1-d",NA
+"CN",2022,3,"Figure1-d",NA
+"CN",2023,5.31,"Figure1-d",NA
+"China",1996,545374.8589,"Figure1-e","CHN"
+"China",1997,587214.3732,"Figure1-e","CHN"
+"China",1998,485312.1012,"Figure1-e","CHN"
+"China",1999,531727.6296,"Figure1-e","CHN"
+"China",2000,696736.6664,"Figure1-e","CHN"
+"China",2001,744635.8043,"Figure1-e","CHN"
+"China",2002,812752.2651,"Figure1-e","CHN"
+"China",2003,864415.2719,"Figure1-e","CHN"
+"China",2004,928608.7055,"Figure1-e","CHN"
+"China",2005,1121168.087,"Figure1-e","CHN"
+"China",2006,1225712.879,"Figure1-e","CHN"
+"China",2007,1424071.75,"Figure1-e","CHN"
+"China",2008,1591067.99,"Figure1-e","CHN"
+"China",2009,1149467.119,"Figure1-e","CHN"
+"China",2010,1205440.724,"Figure1-e","CHN"
+"China",2011,1310631.527,"Figure1-e","CHN"
+"China",2012,1396472.731,"Figure1-e","CHN"
+"China",2013,1474977.421,"Figure1-e","CHN"
+"China",2014,1514647.483,"Figure1-e","CHN"
+"China",2015,1607454.533,"Figure1-e","CHN"
+"China",2016,1680254.376,"Figure1-e","CHN"
+"China",2017,1728153.867,"Figure1-e","CHN"
+"China",2018,1850739.762,"Figure1-e","CHN"
+"China",2019,2091652.163,"Figure1-e","CHN"
+"China",2020,2260472.302,"Figure1-e","CHN"
+"China",2021,2382731.489,"Figure1-e","CHN"
+"US",1996,849259.1261,"Figure1-e","USA"
+"US",1997,887579.8129,"Figure1-e","USA"
+"US",1998,943636.6624,"Figure1-e","USA"
+"US",1999,970373.59,"Figure1-e","USA"
+"US",2000,981631.937,"Figure1-e","USA"
+"US",2001,1001924.408,"Figure1-e","USA"
+"US",2002,1024435.408,"Figure1-e","USA"
+"US",2003,1091884.809,"Figure1-e","USA"
+"US",2004,1061227.266,"Figure1-e","USA"
+"US",2005,1048458.479,"Figure1-e","USA"
+"US",2006,1069865.942,"Figure1-e","USA"
+"US",2007,1064596.609,"Figure1-e","USA"
+"US",2008,1113417.413,"Figure1-e","USA"
+"US",2009,1161325.04,"Figure1-e","USA"
+"US",2010,1097887.367,"Figure1-e","USA"
+"US",2011,1141575.389,"Figure1-e","USA"
+"US",2012,1145634.232,"Figure1-e","USA"
+"US",2013,1180729.358,"Figure1-e","USA"
+"US",2014,1221520.399,"Figure1-e","USA"
+"US",2015,1242795.163,"Figure1-e","USA"
+"US",2016,1237514.29,"Figure1-e","USA"
+"US",2017,1287016.74,"Figure1-e","USA"
+"US",2018,1392980.893,"Figure1-e","USA"
+"US",2019,1414732.406,"Figure1-e","USA"
+"US",2020,1475885.384,"Figure1-e","USA"
+"US",2021,NA,"Figure1-e","USA"

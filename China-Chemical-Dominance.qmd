@@ -1,0 +1,287 @@
+---
+title: "Chemical Space Analysis"
+author: "author"
+format:
+  html:
+    grid: 
+      body-width: 1400px
+    resources: 
+      - shinylive-sw.js
+      - df.csv
+filters:
+  - shinylive
+---
+
+
+## Chemical Space Evolution Analysis
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 800
+library(shiny)
+library(bslib)
+library(dplyr)
+library(plotly)
+
+######### Data Preparation #########
+# df <- read.csv("df.csv")
+data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
+download.file(data_url, "df.csv")
+df <- read.csv("df.csv") 
+
+######### Custom Labels #########
+figure_labels <- list(
+  "Figure1-a" = list(y_title = "Contribution Index", map_title = "Chemical Space Contribution"), 
+  "Figure1-b" = list(y_title = "Collaboration Index", map_title = "International Collaborations"),
+  "Figure1-c" = list(y_title = "Collaboration Percentage", map_title = "China-US Collaboration"),
+  "Figure1-d" = list(y_title = "GDP Growth Rate (%)", map_title = "Economic Indicators"),
+  "Figure1-e" = list(y_title = "Researchers (Count)", map_title = "R&D Workforce")
+)
+
+######### APP #########
+ui <- fluidPage(
+  theme = bs_theme(bootswatch = "flatly", primary = "#2c3e50", secondary = "#18bc9c"),
+  
+  # Navbar at the top
+  div(
+    class = "navbar navbar-static-top primary bg-primary",
+    div("China's rise in the chemical space and the decline of US influence", 
+        class = "container-fluid")
+  ),
+  
+  br(),
+  
+  layout_columns(
+    col_widths = c(3, 9),
+    
+    # Control Panel
+    card(
+      card_header("Controls", class = "bg-primary text-light"),
+      card_body(
+        selectInput("facet", "Select figure:",
+                    choices = unique(df$source),
+                    selected = "Figure1-a",
+                    width = "100%"),
+        
+        div(class = "form-group",
+            h5("Select Countries:"),
+            uiOutput("country_checkboxes")
+        ),
+        
+        div(class = "animation-controls",
+            sliderInput("year", "Year",
+                        min = min(df$Year) ,
+                        max = max(df$Year) - 1,
+                        value = min(df$Year),
+                        step = 1,
+                        animate = animationOptions(interval = 500, loop = FALSE),
+                        width = "100%")
+        ),
+        
+        uiOutput("figure_description")
+      )
+    ),
+    
+    # Visualization Panel
+    layout_column_wrap(
+      width = 1/1,
+      card(
+        full_screen = TRUE,
+        card_header("Interactive Visualizations", class = "bg-primary text-light"),
+        card_body(
+          plotlyOutput("emissionsPlot", height = "50vh"),
+          br(),
+          plotlyOutput("worldMap", height = "40vh")
+        )
+      )
+    )
+  ),
+  
+  # Footer
+  div(
+    class = "footer navbar navbar-static-bottom bg-light",
+    style = "margin-bottom: 20px;",
+    div(
+      class = "container-fluid",
+      "Data source: Bermudez-Montana, Garcia-Chung, et al, 2025 - ",
+      a("ChemRxiv Publication", href = "https://doi.org/10.26434/chemrxiv-2025-d2zc8",
+        style = "color: #18bc9c;")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  # Reactive axis labels
+  axis_labels <- reactive({
+    req(input$facet)
+    figure_labels[[input$facet]] %||% list(y_title = "Value", map_title = "Value")
+  })
+  
+  # Country selection checkboxes
+  output$country_checkboxes <- renderUI({
+    req(input$facet)
+    countries <- df %>% 
+      filter(source == input$facet) %>% 
+      pull(Country) %>% 
+      unique() %>% 
+      sort()
+    
+    fluidRow(
+      column(6,
+             checkboxGroupInput("countries", NULL, 
+                               choices = head(countries, ceiling(length(countries)/2)),
+                               selected = head(countries, 4))
+      ),
+      column(6,
+             checkboxGroupInput("countries2", NULL,
+                               choices = tail(countries, floor(length(countries)/2)),
+                               selected = tail(countries, 4))
+      )
+    )
+  })
+  
+  # Combine checkbox inputs
+  selected_countries <- reactive({
+    unique(c(input$countries, input$countries2))
+  })
+  
+  # Update figure description
+  output$figure_description <- renderUI({
+    req(input$facet)
+    desc_text <- case_when(
+      input$facet == "Figure1-a" ~ "Country participation in chemical space growth using formula:",
+      input$facet == "Figure1-b" ~ "Top international collaborations in chemical research:",
+      input$facet == "Figure1-c" ~ "China-US collaborative contributions to new substances:",
+      input$facet == "Figure1-d" ~ "Economic indicators and major events timeline:",
+      input$facet == "Figure1-e" ~ "Research workforce development metrics:",
+      TRUE ~ paste("Displaying:", input$facet)
+    )
+    
+    div(class = "callout",
+        h5(desc_text),
+        if(input$facet == "Figure1-a") withMathJax(helpText("$$C_{i,t} = \\frac{1}{n_t} \\sum_s \\frac{n_{i,s,t}}{n_{a,s,t}}$$"))
+    )
+  })
+  
+  # Main emissions plot
+  output$emissionsPlot <- renderPlotly({
+    req(selected_countries(), input$facet, input$year)
+    
+    filtered_data <- df %>% 
+      filter(Country %in% selected_countries(),
+             source == input$facet,
+             Year <= input$year) %>% 
+      arrange(Year)
+    
+    if (nrow(filtered_data) == 0) return(plotly_empty())
+    
+    fig <- plot_ly(filtered_data, x = ~Year, y = ~Value, color = ~Country,
+            type = 'scatter', mode = 'lines+markers', line = list(simplify = FALSE, width = 2), showlegend = TRUE,
+            hoverinfo = 'text', text = ~paste0("<b>", Country, "</b><br>",
+                                              axis_labels()$y_title, ": ", round(Value, 2),
+                                              "<br>Year: ", Year))
+      # add_text(text = ~Country, showlegend = FALSE, textposition = "top right") 
+
+    # Add annotations for the latest year
+    final_data <- filtered_data %>% 
+      group_by(Country) %>% 
+      filter(Year == max(Year)) %>% 
+      ungroup()
+    
+    for(i in 1:nrow(final_data)) {
+      fig <- fig %>% add_annotations(
+        x = final_data$Year[i],
+        y = final_data$Value[i],
+        text = final_data$Country[i],
+        xref = "x",
+        yref = "y",
+        xanchor = 'left',
+        yanchor = 'middle',
+        showarrow = FALSE,
+        font = list(size = 12),
+        xshift = 10
+      )
+    }
+
+    fig <- fig %>%
+      layout(
+        title = paste("Temporal Analysis -", input$facet),
+        xaxis = list(title = "Year", gridcolor = "#ecf0f1"),
+        yaxis = list(title = axis_labels()$y_title, gridcolor = "#ecf0f1"),
+        hovermode = "x unified",
+        plot_bgcolor = "#ffffff",
+        legend = list(orientation = 'h', y = -0.2),
+        margin = list(r = 40)
+      )
+
+    if (input$facet == "Figure1-d") {
+      fig %>%
+    add_text(showlegend = FALSE, x = 2020, y = 10,
+            text = "COVID-19") %>%
+    add_text(showlegend = FALSE, x = 2007, y = 15,
+            text = "Global Financial Crisis")
+    }
+    else {
+       fig
+    }
+  })
+  
+  # World map visualization
+  output$worldMap <- renderPlotly({
+    req(input$facet, input$year)
+    
+    map_data <- df %>%
+      filter(source == input$facet, Year == input$year)
+    
+    if (nrow(map_data) == 0) return(plotly_empty())
+    
+    plot_geo(map_data) %>%
+      add_trace(
+        z = ~Value,
+        color = ~Value,
+        colors = "Blues",
+        locations = ~iso3c,
+        text = ~paste0("<b>", Country, "</b><br>",
+                      axis_labels()$map_title, ": ", round(Value, 2)),
+        hoverinfo = "text",
+        marker = list(line = list(color = "white", width = 0.5))
+      ) %>%
+      colorbar(title = axis_labels()$map_title) %>%
+      layout(
+        title = paste("Global Distribution -", input$facet, "(", input$year, ")"),
+        geo = list(
+          showframe = FALSE,
+          showcoastlines = TRUE,
+          projection = list(type = "natural earth"),
+          bgcolor = "rgba(0,0,0,0)",
+          landcolor = "#f8f9fa"
+        )
+      )
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+
+
+## Chemical Space Analysis
+
+
+$$
+C_{i,t} = \frac{1}{n_t} \sum_s \frac{n_{i,s,t}}{n_{a,s,t}}
+$$
+
+**Description of Elements:**
+
+- $Ci,tCi,t$: Contribution of country ii to the chemical space (CS) expansion in year tt.
+- $ntnt$: Total number of new reported chemicals in year tt.
+- $ss$: Index representing a specific chemical substance.
+- $ni,s,tni,s,t$: Number of authors from country ii who published substance ss for the first time in year tt.
+- $na,s,tna,s,t$: Total number of authors participating in the publication of substance ss in year tt.
+
+::: {.callout-note}
+
+This formula calculates the weighted contribution of a country to the discovery of new chemical substances. The contribution is proportional to the number of authors from a specific country relative to the total number of authors involved in reporting each substance. Finally, this contribution is normalized by the total number of new substances for that year.
+:::

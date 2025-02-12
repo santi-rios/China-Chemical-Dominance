@@ -1,0 +1,33 @@
+project:
+  type: website
+  output-dir: _site
+  resources: 
+  - shinylive-sw.js
+
+website:  
+  title: "China's rise in the chemical space and the decline of US influence"
+  navbar:
+    search: true
+    left:
+      - text: "Figure 1"
+        file: China-Chemical-Dominance.qmd
+  page-footer: 
+    left: "https://chemrxiv.org/engage/chemrxiv/article-details/67920ada6dde43c908f688f6"
+    right: 
+      - icon: file-earnark-pdf-fill
+        href: https://github.com/coatless-tutorials/r-shinylive-data-include
+
+lang: en
+
+format:
+  html:
+    grid: 
+      body-width: 1350px
+      sidebar-width: 200px
+      margin-width: 200px
+    toc: true
+    theme: litera
+
+# Attach shinylive to every page
+filters:
+  - shinylive
