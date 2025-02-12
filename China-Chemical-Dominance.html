@@ -186,12 +186,15 @@ library(shiny)
 library(bslib)
 library(dplyr)
 library(plotly)
+library(countrycode)
 
 ######### Data Preparation #########
-# df &lt;- read.csv("df.csv")
 data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
 download.file(data_url, "df.csv")
-df &lt;- read.csv("df.csv") 
+df &lt;- read.csv("df.csv") %&gt;%
+  mutate(continent = countrycode(iso3c, "iso3c", "continent", 
+                                 custom_match = c(USA = "North America"),
+                                 nomatch = "Other"))
 
 ######### Custom Labels #########
 figure_labels &lt;- list(
@@ -205,6 +208,7 @@ figure_labels &lt;- list(
 ######### APP #########
 ui &lt;- fluidPage(
   theme = bs_theme(bootswatch = "flatly", primary = "#2c3e50", secondary = "#18bc9c"),
+  tags$style(HTML(".checkbox-inline { display: inline-block; margin-right: 15px; }")),
   
   # Navbar at the top
   div(
@@ -213,7 +217,14 @@ ui &lt;- fluidPage(
         class = "container-fluid")
   ),
   
-  br(),
+  # Continent and Country controls
+  card(
+    card_header("Region Selection", class = "bg-primary text-light"),
+    card_body(
+      selectInput("continent", "Filter by Continent:",
+                  choices = c("All", unique(na.omit(df$continent)))),
+      uiOutput("country_checkboxes")
+  ),
   
   layout_columns(
     col_widths = c(3, 9),
@@ -227,20 +238,12 @@ ui &lt;- fluidPage(
                     selected = "Figure1-a",
                     width = "100%"),
         
-        div(class = "form-group",
-            h5("Select Countries:"),
-            uiOutput("country_checkboxes")
-        ),
-        
-        div(class = "animation-controls",
-            sliderInput("year", "Year",
-                        min = min(df$Year) ,
-                        max = max(df$Year) - 1,
-                        value = min(df$Year),
-                        step = 1,
-                        animate = animationOptions(interval = 500, loop = FALSE),
-                        width = "100%")
-        ),
+        sliderInput("year", "Year",
+                    min = min(df$Year),
+                    max = max(df$Year) - 1,
+                    value = min(df$Year),
+                    step = 1,
+                    width = "100%"),
         
         uiOutput("figure_description")
       )
@@ -273,6 +276,7 @@ ui &lt;- fluidPage(
     )
   )
 )
+)
 
 server &lt;- function(input, output, session) {
   
@@ -286,28 +290,22 @@ server &lt;- function(input, output, session) {
   output$country_checkboxes &lt;- renderUI({
     req(input$facet)
     countries &lt;- df %&gt;% 
-      filter(source == input$facet) %&gt;% 
+      filter(source == input$facet) 
+    
+    if (!is.null(input$continent) &amp;&amp; input$continent != "All") {
+      countries &lt;- countries %&gt;% 
+        filter(continent == input$continent)
+    }
+    
+    countries &lt;- countries %&gt;% 
       pull(Country) %&gt;% 
       unique() %&gt;% 
       sort()
     
-    fluidRow(
-      column(6,
-             checkboxGroupInput("countries", NULL, 
-                               choices = head(countries, ceiling(length(countries)/2)),
-                               selected = head(countries, 4))
-      ),
-      column(6,
-             checkboxGroupInput("countries2", NULL,
-                               choices = tail(countries, floor(length(countries)/2)),
-                               selected = tail(countries, 4))
-      )
-    )
-  })
-  
-  # Combine checkbox inputs
-  selected_countries &lt;- reactive({
-    unique(c(input$countries, input$countries2))
+    checkboxGroupInput("countries", "Select Countries:",
+                       choices = countries,
+                       selected = head(countries, 4),
+                       inline = TRUE)
   })
   
   # Update figure description
@@ -330,10 +328,10 @@ server &lt;- function(input, output, session) {
   
   # Main emissions plot
   output$emissionsPlot &lt;- renderPlotly({
-    req(selected_countries(), input$facet, input$year)
+    req(input$countries, input$facet, input$year)
     
     filtered_data &lt;- df %&gt;% 
-      filter(Country %in% selected_countries(),
+      filter(Country %in% input$countries,
              source == input$facet,
              Year &lt;= input$year) %&gt;% 
       arrange(Year)
@@ -341,33 +339,17 @@ server &lt;- function(input, output, session) {
     if (nrow(filtered_data) == 0) return(plotly_empty())
     
     fig &lt;- plot_ly(filtered_data, x = ~Year, y = ~Value, color = ~Country,
-            type = 'scatter', mode = 'lines+markers', line = list(simplify = FALSE, width = 2), showlegend = TRUE,
+            type = 'scatter', mode = 'lines+markers', line = list(simplify = TRUE, width = 2),
             hoverinfo = 'text', text = ~paste0("&lt;b&gt;", Country, "&lt;/b&gt;&lt;br&gt;",
                                               axis_labels()$y_title, ": ", round(Value, 2),
                                               "&lt;br&gt;Year: ", Year))
-      # add_text(text = ~Country, showlegend = FALSE, textposition = "top right") 
-
+    
     # Add annotations for the latest year
     final_data &lt;- filtered_data %&gt;% 
       group_by(Country) %&gt;% 
       filter(Year == max(Year)) %&gt;% 
       ungroup()
     
-    for(i in 1:nrow(final_data)) {
-      fig &lt;- fig %&gt;% add_annotations(
-        x = final_data$Year[i],
-        y = final_data$Value[i],
-        text = final_data$Country[i],
-        xref = "x",
-        yref = "y",
-        xanchor = 'left',
-        yanchor = 'middle',
-        showarrow = FALSE,
-        font = list(size = 12),
-        xshift = 10
-      )
-    }
-
     fig &lt;- fig %&gt;%
       layout(
         title = paste("Temporal Analysis -", input$facet),
@@ -381,12 +363,9 @@ server &lt;- function(input, output, session) {
 
     if (input$facet == "Figure1-d") {
       fig %&gt;%
-    add_text(showlegend = FALSE, x = 2020, y = 10,
-            text = "COVID-19") %&gt;%
-    add_text(showlegend = FALSE, x = 2007, y = 15,
-            text = "Global Financial Crisis")
-    }
-    else {
+    add_annotations(x = 2020, y = 10, text = "COVID-19", showarrow = FALSE) %&gt;%
+    add_annotations(x = 2007, y = 15, text = "Global Financial Crisis", showarrow = FALSE)
+    } else {
        fig
     }
   })
@@ -423,10 +402,11 @@ server &lt;- function(input, output, session) {
         )
       )
   })
-  
 }
 
-shinyApp(ui, server)</code></pre>
+shinyApp(ui, server)
+
+</code></pre>
 </section>
 <section id="chemical-space-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="chemical-space-analysis">Chemical Space Analysis</h2>
@@ -549,7 +529,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/santi-rios\.github\.io\/China-Chemical-Dominance\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
