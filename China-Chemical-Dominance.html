@@ -234,9 +234,10 @@ library(plotly)
 library(data.table)
 
 ######### Data Preparation #########
-# data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
+# Updated data URL
 data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/fig_1_complete.csv"
 
+# Load and preprocess data
 df &lt;- fread(data_url) %&gt;% 
   mutate(Country = as.factor(Country), source = as.factor(source))
 
@@ -257,7 +258,7 @@ ui &lt;- fluidPage(
   # Navbar
   div(
     class = "navbar navbar-static-top primary bg-primary",
-    div("China's rise in the chemical space and the decline of US influence", 
+    div("China's Rise in the Chemical Space and the Decline of US Influence", 
         class = "container-fluid")
   ),
   
@@ -265,19 +266,28 @@ ui &lt;- fluidPage(
   card(
     card_header("Controls", class = "bg-primary text-light"),
     card_body(
-      selectInput("facet", "Select figure:",
-                  choices = levels(df$source),
-                  selected = "Figure1-a",
-                  width = "100%"),
+      # Select Figure
+      selectInput(
+        inputId = "facet", 
+        label = "Select Figure:",
+        choices = levels(df$source),
+        selected = "Figure1-a",
+        width = "100%"
+      ),
       
-      sliderInput("year", "Year",
-                  min = min(df$Year),
-                  max = max(df$Year) - 1,
-                  value = min(df$Year),
-                  step = 1,
-                  animate = animationOptions(interval = 500, loop = FALSE),
-                  width = "100%"),
+      # Year Slider without Animation
+      sliderInput(
+        inputId = "year", 
+        label = "Year",
+        min = min(df$Year, na.rm = TRUE),
+        max = max(df$Year, na.rm = TRUE) - 1,
+        value = min(df$Year, na.rm = TRUE),
+        step = 1,
+        animate = FALSE,  # Removed animation to enhance performance
+        width = "100%"
+      ),
       
+      # UI Output for Figure Description
       uiOutput("figure_description")
     )
   ),
@@ -308,18 +318,21 @@ ui &lt;- fluidPage(
 
 server &lt;- function(input, output, session) {
   ######### Reactive Values #########
-  # Initialize all countries as selected by default
-  selected_countries &lt;- reactiveVal(levels(df$Country))
+  # Initialize selected_countries with top 20 countries based on highest Value for the selected facet
+  selected_countries &lt;- reactiveVal(NULL)
   
   ######### Observers #########
   
   # Update selected countries when facet changes
   observeEvent(input$facet, {
-    countries &lt;- df[source == input$facet, unique(Country)]
+    countries &lt;- df[source == input$facet, .(max_value = max(Value, na.rm = TRUE)), by = Country] %&gt;%
+      arrange(desc(max_value)) %&gt;%
+      head(20) %&gt;%
+      pull(Country)
     selected_countries(countries)
-  }, ignoreNULL = FALSE)
+  }, ignoreInit = TRUE)
   
-  # Handle plotly legend clicks for emissionsPlot
+  # Handle plotly legend clicks for emissionsPlot to synchronize selections
   observeEvent(event_data("plotly_legendclick", source = "emissions"), {
     click &lt;- event_data("plotly_legendclick", source = "emissions")
     current &lt;- selected_countries()
@@ -330,7 +343,11 @@ server &lt;- function(input, output, session) {
       } else {
         updated &lt;- c(current, click$name)
       }
-      # Update the reactive selected_countries
+      # Limit the number of selected countries to prevent performance issues
+      if (length(updated) &gt; 50) {  # Example threshold
+        showNotification("You have selected too many countries. Please deselect some to improve performance.", type = "warning")
+        updated &lt;- head(updated, 50)
+      }
       selected_countries(updated)
     }
   })
@@ -351,8 +368,8 @@ server &lt;- function(input, output, session) {
   # Figure description
   output$figure_description &lt;- renderUI({
     desc_text &lt;- switch(input$facet,
-      "Figure1-a" = "Country participation in chemical space growth using formula:",
-      "Figure12-a_b" = "Country participation in chemical space growth using formula:",
+      "Figure1-a" = "Country participation in chemical space growth using the formula:",
+      "Figure12-a_b" = "Country participation in chemical space growth using the formula:",
       "Figure1-b" = "Top international collaborations in chemical research:",
       "Figure1-c" = "China-US collaborative contributions to new substances:",
       "Figure1-d" = "Economic indicators and major events timeline:",
@@ -362,7 +379,8 @@ server &lt;- function(input, output, session) {
     
     div(class = "callout",
         h5(desc_text),
-        if(input$facet == "Figure1-a") withMathJax(helpText("$$C_{i,t} = \\frac{1}{n_t} \\sum_s \\frac{n_{i,s,t}}{n_{a,s,t}}$$"))
+        if(input$facet %in% c("Figure1-a", "Figure12-a_b")) 
+          withMathJax(helpText("$$C_{i,t} = \\frac{1}{n_t} \\sum_s \\frac{n_{i,s,t}}{n_{a,s,t}}$$"))
     )
   })
   
@@ -383,7 +401,8 @@ server &lt;- function(input, output, session) {
       colors = "Set1",
       type = 'scatter', 
       mode = 'lines+markers', 
-      line = list(width = 2),
+      line = list(width = 1),  # Reduced line width for performance
+      marker = list(size = 4), # Reduced marker size for performance
       hoverinfo = 'text',
       text = ~paste0("&lt;b&gt;", Country, "&lt;/b&gt;&lt;br&gt;",
                      axis_labels()$y_title, ": ", round(Value, 2),
@@ -392,12 +411,14 @@ server &lt;- function(input, output, session) {
       showlegend = TRUE
     ) 
     
-    # Add annotations with country names at the end of each line
+    # Optionally, remove annotations to enhance performance
+    # Annotations can be heavy with many categories
+    # Uncomment the following lines if annotations are necessary
     # final_data &lt;- plot_data %&gt;% 
     #   group_by(Country) %&gt;% 
     #   filter(Year == max(Year)) %&gt;% 
     #   ungroup()
-    
+    # 
     # for(i in 1:nrow(final_data)) {
     #   fig &lt;- fig %&gt;% add_annotations(
     #     x = final_data$Year[i],
@@ -408,8 +429,8 @@ server &lt;- function(input, output, session) {
     #     xanchor = 'left',
     #     yanchor = 'middle',
     #     showarrow = FALSE,
-    #     font = list(size = 12, color = 'black'),
-    #     xshift = 10
+    #     font = list(size = 8, color = 'black'),  # Smaller font size
+    #     xshift = 5  # Reduced xshift
     #   )
     # }
     
@@ -419,14 +440,20 @@ server &lt;- function(input, output, session) {
       yaxis = list(title = axis_labels()$y_title, gridcolor = "#ecf0f1"),
       hovermode = "closest",
       plot_bgcolor = "#ffffff",
-      legend = list(orientation = 'h', y = -0.2, itemclick = "toggle", itemdoubleclick = FALSE),
+      legend = list(
+        orientation = 'h', 
+        y = -0.2, 
+        itemclick = "toggle", 
+        itemdoubleclick = FALSE
+      ),
       margin = list(r = 40)
     ) 
     
+    # Add specific annotations only if necessary
     if (input$facet == "Figure1-d") {
       fig &lt;- fig %&gt;% 
-        add_annotations(x = 2020, y = 10, text = "COVID-19", showarrow = FALSE) %&gt;%
-        add_annotations(x = 2007, y = 15, text = "Global Financial Crisis", showarrow = FALSE)
+        add_annotations(x = 2020, y = 10, text = "COVID-19", showarrow = FALSE, font = list(size = 8)) %&gt;%
+        add_annotations(x = 2007, y = 15, text = "Global Financial Crisis", showarrow = FALSE, font = list(size = 8))
     }
     
     return(fig)
@@ -440,7 +467,8 @@ server &lt;- function(input, output, session) {
     map_data &lt;- filtered_data()[Year == input$year]
     if (nrow(map_data) == 0) return(plotly_empty())
     
-    plot_geo(map_data, height = 300) %&gt;%
+    # Create the world map plot
+    fig &lt;- plot_geo(map_data, height = 300) %&gt;%
       add_trace(
         z = ~Value,
         color = ~Value,
@@ -465,11 +493,13 @@ server &lt;- function(input, output, session) {
         ),
         margin = list(b = 80)
       )
+    
+    return(fig)
   })
 }
 
-shinyApp(ui, server)
-</code></pre>
+# Run the application 
+shinyApp(ui, server)</code></pre>
 </section>
 <section id="chemical-space-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="chemical-space-analysis">Chemical Space Analysis</h2>
