@@ -243,6 +243,7 @@ df &lt;- fread(data_url) %&gt;%
 ######### Custom Labels #########
 figure_labels &lt;- list(
   "Figure1-a" = list(y_title = "Contribution Index", map_title = "Chemical Space Contribution"), 
+  "Figure12-a_b" = list(y_title = "Contribution Index", map_title = "Chemical Space Contribution"), 
   "Figure1-b" = list(y_title = "Collaboration Index", map_title = "International Collaborations"),
   "Figure1-c" = list(y_title = "Collaboration Percentage", map_title = "China-US Collaboration"),
   "Figure1-d" = list(y_title = "GDP Growth Rate (%)", map_title = "Economic Indicators"),
@@ -351,6 +352,7 @@ server &lt;- function(input, output, session) {
   output$figure_description &lt;- renderUI({
     desc_text &lt;- switch(input$facet,
       "Figure1-a" = "Country participation in chemical space growth using formula:",
+      "Figure12-a_b" = "Country participation in chemical space growth using formula:",
       "Figure1-b" = "Top international collaborations in chemical research:",
       "Figure1-c" = "China-US collaborative contributions to new substances:",
       "Figure1-d" = "Economic indicators and major events timeline:",
@@ -391,25 +393,25 @@ server &lt;- function(input, output, session) {
     ) 
     
     # Add annotations with country names at the end of each line
-    final_data &lt;- plot_data %&gt;% 
-      group_by(Country) %&gt;% 
-      filter(Year == max(Year)) %&gt;% 
-      ungroup()
+    # final_data &lt;- plot_data %&gt;% 
+    #   group_by(Country) %&gt;% 
+    #   filter(Year == max(Year)) %&gt;% 
+    #   ungroup()
     
-    for(i in 1:nrow(final_data)) {
-      fig &lt;- fig %&gt;% add_annotations(
-        x = final_data$Year[i],
-        y = final_data$Value[i],
-        text = final_data$Country[i],
-        xref = "x",
-        yref = "y",
-        xanchor = 'left',
-        yanchor = 'middle',
-        showarrow = FALSE,
-        font = list(size = 12, color = 'black'),
-        xshift = 10
-      )
-    }
+    # for(i in 1:nrow(final_data)) {
+    #   fig &lt;- fig %&gt;% add_annotations(
+    #     x = final_data$Year[i],
+    #     y = final_data$Value[i],
+    #     text = final_data$Country[i],
+    #     xref = "x",
+    #     yref = "y",
+    #     xanchor = 'left',
+    #     yanchor = 'middle',
+    #     showarrow = FALSE,
+    #     font = list(size = 12, color = 'black'),
+    #     xshift = 10
+    #   )
+    # }
     
     fig &lt;- fig %&gt;% layout(
       title = paste("Temporal Analysis -", input$facet),
