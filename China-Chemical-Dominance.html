@@ -126,6 +126,10 @@ window.Quarto = {
     <a class="nav-link active" href="./China-Chemical-Dominance.html" aria-current="page"> 
 <span class="menu-text">Figure 1</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./figure2.html"> 
+<span class="menu-text">Figure 2</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -177,24 +181,64 @@ window.Quarto = {
 
 <section id="chemical-space-evolution-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="chemical-space-evolution-analysis">Chemical Space Evolution Analysis</h2>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout="[[1], [1, 1, 1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./figures/cartogram_animation.gif" class="img-fluid figure-img"></p>
+<figcaption>Cartogram of 1996-2022</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./cartograms/1996.png" class="img-fluid figure-img"></p>
+<figcaption>Cartogram of 1996</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./cartograms/2010.png" class="img-fluid figure-img"></p>
+<figcaption>Cartogram of 2010</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./cartograms/2022.png" class="img-fluid figure-img"></p>
+<figcaption>Cartogram of 2022</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
 #|   shinylive does not work in self-contained HTML documents.
 #|   Please set `embed-resources: false` in your metadata.
 #| standalone: true
-#| viewerHeight: 800
+#| viewerHeight: 1000
 library(shiny)
 library(bslib)
 library(dplyr)
 library(plotly)
-library(countrycode)
+library(data.table)
 
 ######### Data Preparation #########
-data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
-download.file(data_url, "df.csv")
-df &lt;- read.csv("df.csv") %&gt;%
-  mutate(continent = countrycode(iso3c, "iso3c", "continent", 
-                                 custom_match = c(USA = "North America"),
-                                 nomatch = "Other"))
+# data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
+data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/fig_1_complete.csv"
+
+df &lt;- fread(data_url) %&gt;% 
+  mutate(Country = as.factor(Country), source = as.factor(source))
 
 ######### Custom Labels #########
 figure_labels &lt;- list(
@@ -208,59 +252,43 @@ figure_labels &lt;- list(
 ######### APP #########
 ui &lt;- fluidPage(
   theme = bs_theme(bootswatch = "flatly", primary = "#2c3e50", secondary = "#18bc9c"),
-  tags$style(HTML(".checkbox-inline { display: inline-block; margin-right: 15px; }")),
   
-  # Navbar at the top
+  # Navbar
   div(
     class = "navbar navbar-static-top primary bg-primary",
     div("China's rise in the chemical space and the decline of US influence", 
         class = "container-fluid")
   ),
   
-  # Continent and Country controls
+  # Control Panel
   card(
-    card_header("Region Selection", class = "bg-primary text-light"),
+    card_header("Controls", class = "bg-primary text-light"),
     card_body(
-      selectInput("continent", "Filter by Continent:",
-                  choices = c("All", unique(na.omit(df$continent)))),
-      uiOutput("country_checkboxes")
+      selectInput("facet", "Select figure:",
+                  choices = levels(df$source),
+                  selected = "Figure1-a",
+                  width = "100%"),
+      
+      sliderInput("year", "Year",
+                  min = min(df$Year),
+                  max = max(df$Year) - 1,
+                  value = min(df$Year),
+                  step = 1,
+                  animate = animationOptions(interval = 500, loop = FALSE),
+                  width = "100%"),
+      
+      uiOutput("figure_description")
+    )
   ),
   
-  layout_columns(
-    col_widths = c(3, 9),
-    
-    # Control Panel
-    card(
-      card_header("Controls", class = "bg-primary text-light"),
-      card_body(
-        selectInput("facet", "Select figure:",
-                    choices = unique(df$source),
-                    selected = "Figure1-a",
-                    width = "100%"),
-        
-        sliderInput("year", "Year",
-                    min = min(df$Year),
-                    max = max(df$Year) - 1,
-                    value = min(df$Year),
-                    step = 1,
-                    width = "100%"),
-        
-        uiOutput("figure_description")
-      )
-    ),
-    
-    # Visualization Panel
-    layout_column_wrap(
-      width = 1/1,
-      card(
-        full_screen = TRUE,
-        card_header("Interactive Visualizations", class = "bg-primary text-light"),
-        card_body(
-          plotlyOutput("emissionsPlot", height = "50vh"),
-          br(),
-          plotlyOutput("worldMap", height = "40vh")
-        )
-      )
+  # Visualization Panel
+  card(
+    full_screen = TRUE,
+    card_header("Interactive Visualizations", class = "bg-primary text-light"),
+    card_body(
+      plotlyOutput("emissionsPlot", height = "50vh"),
+      br(),
+      plotlyOutput("worldMap", height = "40vh")
     )
   ),
   
@@ -276,48 +304,58 @@ ui &lt;- fluidPage(
     )
   )
 )
-)
 
 server &lt;- function(input, output, session) {
+  ######### Reactive Values #########
+  # Initialize all countries as selected by default
+  selected_countries &lt;- reactiveVal(levels(df$Country))
+  
+  ######### Observers #########
+  
+  # Update selected countries when facet changes
+  observeEvent(input$facet, {
+    countries &lt;- df[source == input$facet, unique(Country)]
+    selected_countries(countries)
+  }, ignoreNULL = FALSE)
+  
+  # Handle plotly legend clicks for emissionsPlot
+  observeEvent(event_data("plotly_legendclick", source = "emissions"), {
+    click &lt;- event_data("plotly_legendclick", source = "emissions")
+    current &lt;- selected_countries()
+    
+    if (!is.null(click$name)) {
+      if (click$name %in% current) {
+        updated &lt;- setdiff(current, click$name)
+      } else {
+        updated &lt;- c(current, click$name)
+      }
+      # Update the reactive selected_countries
+      selected_countries(updated)
+    }
+  })
   
   # Reactive axis labels
   axis_labels &lt;- reactive({
-    req(input$facet)
     figure_labels[[input$facet]] %||% list(y_title = "Value", map_title = "Value")
   })
   
-  # Country selection checkboxes
-  output$country_checkboxes &lt;- renderUI({
-    req(input$facet)
-    countries &lt;- df %&gt;% 
-      filter(source == input$facet) 
-    
-    if (!is.null(input$continent) &amp;&amp; input$continent != "All") {
-      countries &lt;- countries %&gt;% 
-        filter(continent == input$continent)
-    }
-    
-    countries &lt;- countries %&gt;% 
-      pull(Country) %&gt;% 
-      unique() %&gt;% 
-      sort()
-    
-    checkboxGroupInput("countries", "Select Countries:",
-                       choices = countries,
-                       selected = head(countries, 4),
-                       inline = TRUE)
+  # Filtered data based on selected countries and facet
+  filtered_data &lt;- reactive({
+    req(input$facet, selected_countries())
+    df[source == input$facet &amp; Country %in% selected_countries()]
   })
   
-  # Update figure description
+  ######### UI Outputs #########
+  
+  # Figure description
   output$figure_description &lt;- renderUI({
-    req(input$facet)
-    desc_text &lt;- case_when(
-      input$facet == "Figure1-a" ~ "Country participation in chemical space growth using formula:",
-      input$facet == "Figure1-b" ~ "Top international collaborations in chemical research:",
-      input$facet == "Figure1-c" ~ "China-US collaborative contributions to new substances:",
-      input$facet == "Figure1-d" ~ "Economic indicators and major events timeline:",
-      input$facet == "Figure1-e" ~ "Research workforce development metrics:",
-      TRUE ~ paste("Displaying:", input$facet)
+    desc_text &lt;- switch(input$facet,
+      "Figure1-a" = "Country participation in chemical space growth using formula:",
+      "Figure1-b" = "Top international collaborations in chemical research:",
+      "Figure1-c" = "China-US collaborative contributions to new substances:",
+      "Figure1-d" = "Economic indicators and major events timeline:",
+      "Figure1-e" = "Research workforce development metrics:",
+      paste("Displaying:", input$facet)
     )
     
     div(class = "callout",
@@ -326,60 +364,81 @@ server &lt;- function(input, output, session) {
     )
   })
   
-  # Main emissions plot
+  ######### Emissions Plot #########
+  
   output$emissionsPlot &lt;- renderPlotly({
-    req(input$countries, input$facet, input$year)
+    req(filtered_data(), input$year)
     
-    filtered_data &lt;- df %&gt;% 
-      filter(Country %in% input$countries,
-             source == input$facet,
-             Year &lt;= input$year) %&gt;% 
-      arrange(Year)
+    plot_data &lt;- filtered_data()[Year &lt;= input$year]
+    if (nrow(plot_data) == 0) return(plotly_empty())
     
-    if (nrow(filtered_data) == 0) return(plotly_empty())
+    # Create the line plot
+    fig &lt;- plot_ly(
+      plot_data, 
+      x = ~Year, 
+      y = ~Value, 
+      color = ~Country,
+      colors = "Set1",
+      type = 'scatter', 
+      mode = 'lines+markers', 
+      line = list(width = 2),
+      hoverinfo = 'text',
+      text = ~paste0("&lt;b&gt;", Country, "&lt;/b&gt;&lt;br&gt;",
+                     axis_labels()$y_title, ": ", round(Value, 2),
+                     "&lt;br&gt;Year: ", Year),
+      source = "emissions",
+      showlegend = TRUE
+    ) 
     
-    fig &lt;- plot_ly(filtered_data, x = ~Year, y = ~Value, color = ~Country,
-            type = 'scatter', mode = 'lines+markers', line = list(simplify = TRUE, width = 2),
-            hoverinfo = 'text', text = ~paste0("&lt;b&gt;", Country, "&lt;/b&gt;&lt;br&gt;",
-                                              axis_labels()$y_title, ": ", round(Value, 2),
-                                              "&lt;br&gt;Year: ", Year))
-    
-    # Add annotations for the latest year
-    final_data &lt;- filtered_data %&gt;% 
+    # Add annotations with country names at the end of each line
+    final_data &lt;- plot_data %&gt;% 
       group_by(Country) %&gt;% 
       filter(Year == max(Year)) %&gt;% 
       ungroup()
     
-    fig &lt;- fig %&gt;%
-      layout(
-        title = paste("Temporal Analysis -", input$facet),
-        xaxis = list(title = "Year", gridcolor = "#ecf0f1"),
-        yaxis = list(title = axis_labels()$y_title, gridcolor = "#ecf0f1"),
-        hovermode = "x unified",
-        plot_bgcolor = "#ffffff",
-        legend = list(orientation = 'h', y = -0.2),
-        margin = list(r = 40)
+    for(i in 1:nrow(final_data)) {
+      fig &lt;- fig %&gt;% add_annotations(
+        x = final_data$Year[i],
+        y = final_data$Value[i],
+        text = final_data$Country[i],
+        xref = "x",
+        yref = "y",
+        xanchor = 'left',
+        yanchor = 'middle',
+        showarrow = FALSE,
+        font = list(size = 12, color = 'black'),
+        xshift = 10
       )
-
-    if (input$facet == "Figure1-d") {
-      fig %&gt;%
-    add_annotations(x = 2020, y = 10, text = "COVID-19", showarrow = FALSE) %&gt;%
-    add_annotations(x = 2007, y = 15, text = "Global Financial Crisis", showarrow = FALSE)
-    } else {
-       fig
     }
+    
+    fig &lt;- fig %&gt;% layout(
+      title = paste("Temporal Analysis -", input$facet),
+      xaxis = list(title = "Year", gridcolor = "#ecf0f1"),
+      yaxis = list(title = axis_labels()$y_title, gridcolor = "#ecf0f1"),
+      hovermode = "closest",
+      plot_bgcolor = "#ffffff",
+      legend = list(orientation = 'h', y = -0.2, itemclick = "toggle", itemdoubleclick = FALSE),
+      margin = list(r = 40)
+    ) 
+    
+    if (input$facet == "Figure1-d") {
+      fig &lt;- fig %&gt;% 
+        add_annotations(x = 2020, y = 10, text = "COVID-19", showarrow = FALSE) %&gt;%
+        add_annotations(x = 2007, y = 15, text = "Global Financial Crisis", showarrow = FALSE)
+    }
+    
+    return(fig)
   })
   
-  # World map visualization
+  ######### World Map #########
+  
   output$worldMap &lt;- renderPlotly({
-    req(input$facet, input$year)
+    req(filtered_data(), input$year)
     
-    map_data &lt;- df %&gt;%
-      filter(source == input$facet, Year == input$year)
-    
+    map_data &lt;- filtered_data()[Year == input$year]
     if (nrow(map_data) == 0) return(plotly_empty())
     
-    plot_geo(map_data) %&gt;%
+    plot_geo(map_data, height = 300) %&gt;%
       add_trace(
         z = ~Value,
         color = ~Value,
@@ -388,9 +447,11 @@ server &lt;- function(input, output, session) {
         text = ~paste0("&lt;b&gt;", Country, "&lt;/b&gt;&lt;br&gt;",
                       axis_labels()$map_title, ": ", round(Value, 2)),
         hoverinfo = "text",
-        marker = list(line = list(color = "white", width = 0.5))
+        marker = list(line = list(color = "white", width = 0.5)),
+        source = "map"
       ) %&gt;%
-      colorbar(title = axis_labels()$map_title) %&gt;%
+      colorbar(title = axis_labels()$map_title, 
+               orientation = 'h', y = -0.1) %&gt;%
       layout(
         title = paste("Global Distribution -", input$facet, "(", input$year, ")"),
         geo = list(
@@ -399,13 +460,13 @@ server &lt;- function(input, output, session) {
           projection = list(type = "natural earth"),
           bgcolor = "rgba(0,0,0,0)",
           landcolor = "#f8f9fa"
-        )
+        ),
+        margin = list(b = 80)
       )
   })
 }
 
 shinyApp(ui, server)
-
 </code></pre>
 </section>
 <section id="chemical-space-analysis" class="level2">
