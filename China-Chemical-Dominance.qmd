@@ -31,7 +31,7 @@ library(RColorBrewer)
 library(dplyr)
 
 ######### Data Preparation #########
-data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/fig_1_df.csv"
+data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/main/data/fig_1_df.csv"
 
 # Read data with data.table
 df <- fread(data_url)
@@ -66,38 +66,50 @@ ui <- fluidPage(
   ),
   
   div(class = "card",
-      div(class = "card-header", "Select a Year and Maximum of 10 Countries. A random country is selected by default. Single click to select/deselect a country. Double click to select/deselect all."),
+      div(class = "card-header", 
+          "Select a Year and up to 10 Countries. A random country is selected by default. 
+           Single-click to add/remove a country. Double-click a legend item to isolate it."),
       div(class = "card-body",
           
           # Year Slider
-          sliderInput("year", "Select Year",
-                      min = min(df$Year, na.rm = TRUE) + 1, 
-                      max = max(df$Year, na.rm = TRUE) - 1,
-                      value = min(df$Year, na.rm = TRUE),
-                      selected = max(df$Year, na.rm = TRUE) -1,
-                      step = 1, width = "100%"),
+          sliderInput(
+            "year", "Select Year",
+            min     = min(df$Year, na.rm = TRUE),
+            max     = max(df$Year, na.rm = TRUE),
+            value   = min(df$Year, na.rm = TRUE),
+            step    = 1, 
+            width   = "100%"
+          ),
           
           # Metric (figure) selection
-          selectInput("facet", "Select Metric:",
-                      choices  = unique(df$source.x),
-                      selected = "Figure-12-a_b",
-                      width    = "100%"),
+          selectInput(
+            "facet", "Select Metric:",
+            choices  = unique(df$source.x),
+            selected = "Figure-12-a_b",
+            width    = "100%"
+          ),
           
           # Countries
-          selectizeInput("countrySelector", "Select Countries:",
-                         choices = NULL,  # filled dynamically in server
-                         multiple = TRUE,
-                         options = list(maxItems = 10),
-                         width = "100%")
+          selectizeInput(
+            "countrySelector", 
+            "Select Countries:",
+            choices  = NULL,  # filled dynamically in server
+            multiple = TRUE,
+            options  = list(maxItems = 10),
+            width    = "100%"
+          )
       )
   ),
   
   div(class = "card",
-      div(class = "card-header", "Analytical Interactive Plots. Hover over the plots for more information. The map shows the latest data available. The cartogram is only available for the first figure."),
+      div(class = "card-header", 
+          "Analytical Interactive Plots. Hover for more info. 
+           The map shows data at the selected year. 
+           Cartogram (if available) only for Figure-12-a_b."),
       div(class = "card-body",
           plotlyOutput("combinedPlot", height = "500px"),
           plotlyOutput("geoPlot", height = "400px"),
-          uiOutput("cartogramImage")  # show image if "Figure1-a"
+          uiOutput("cartogramImage")  # show image if "Figure-12-a_b"
       )
   )
 )
@@ -116,55 +128,46 @@ server <- function(input, output, session) {
     valid_countries <- sort(as.character(valid_countries))  # alphabetical
     
     # By default, select a random country if available
-    default_sel <- if(length(valid_countries) > 0) sample(valid_countries, 1) else character(0)
+    default_sel <- if (length(valid_countries) > 0) sample(valid_countries, 1) else character(0)
     
     # Update the input
-    updateSelectizeInput(session, "countrySelector", 
-                         choices  = valid_countries,
-                         selected = default_sel,
-                         server   = TRUE)
+    updateSelectizeInput(
+      session, "countrySelector", 
+      choices  = valid_countries,
+      selected = default_sel,
+      server   = TRUE
+    )
   })
+  
   #############################################
   ## 2) Reactive subset based on user inputs ##
   #############################################
   filtered_data <- reactive({
     req(input$facet, input$countrySelector, input$year)
-    
-    # Filter
     df[
       source.x == input$facet &
         Country %in% input$countrySelector &
         Year <= input$year
     ]
-    # We do NOT do na.omit() here, so that countries with missing Value.y
-    # still appear with Value.x. We only omit if both are missing, if needed.
   }) %>% debounce(300)
   
   ########################################
   ## 3) Helper: define color assignment ##
   ########################################
   country_colors <- function(data_subset) {
-    # Get the unique countries in the filtered data
     countries <- unique(as.character(data_subset$Country))
-    
-    # Start with an empty named vector
     color_map <- c()
-    
-    # If we have these countries, assign fixed colors
     if ("United States" %in% countries) {
       color_map["United States"] <- "blue"
     }
     if ("China" %in% countries) {
       color_map["China"] <- "red"
     }
-    
-    # The rest get free colors from a dynamic palette using colorRampPalette
     others <- setdiff(countries, c("United States", "China"))
     if (length(others) > 0) {
       pal <- colorRampPalette(brewer.pal(min(8, length(others)), name = "Set2"))(length(others))
       color_map[others] <- pal
     }
-    
     color_map
   }
   
@@ -177,7 +180,6 @@ server <- function(input, output, session) {
     data_subset <- filtered_data()
     if (nrow(data_subset) == 0) return(plotly_empty())
     
-    # Determine the color palette
     color_map <- country_colors(data_subset)
     
     # Build the base ggplot with lines for Value.x
@@ -204,17 +206,16 @@ server <- function(input, output, session) {
     if (input$facet == "Figure-12-a_b") {
       gg_base <- gg_base +
         geom_point(
-          data = data_subset[!is.na(Value.y), ],  # only plot points where Value.y exists
+          data = data_subset[!is.na(Value.y), ],
           aes(y = Value.y, shape = substance),
           size = 2, alpha = 0.8, na.rm = TRUE
         ) +
         scale_shape_manual(values = c(16, 17, 15, 18), na.translate = FALSE)
     }
     
-    # Convert to plotly
     p <- ggplotly(gg_base, tooltip = c("x", "y", "colour", "shape")) %>%
       layout(
-        legend = list(orientation = "v"), # , y = -0.3
+        legend    = list(orientation = "v"),
         hovermode = "closest"
       )
     
@@ -238,22 +239,19 @@ server <- function(input, output, session) {
   ##################################
   output$geoPlot <- renderPlotly({
     data <- filtered_data()[Year == input$year]
-    if(nrow(data) == 0) return(plotly_empty())
+    if (nrow(data) == 0) return(plotly_empty())
     
-    # Use Value.x on the map
     val_label <- figure_labels[[input$facet]]$y_title %||% "Value"
     
     plot_geo(data, height = 300) %>%
       add_trace(
-        z       = ~Value.x,
-        color   = ~Value.x,
-        // colors  = "Blues",
-        // colorscale="Viridis",
-        colorscale="Purples", // Purples, Greens, Reds, Blues
+        z         = ~Value.x,
+        color     = ~Value.x,
+        colorscale = "Purples",
         locations = ~iso3c,
-        text    = ~paste(Country, "<br>Value.x:", round(Value.x, 2)),
+        text      = ~paste(Country, "<br>Value.x:", round(Value.x, 2)),
         hoverinfo = "text",
-        marker  = list(line = list(color = "white", width = 0.3))
+        marker    = list(line = list(color = "white", width = 0.3))
       ) %>%
       colorbar(title = val_label) %>%
       layout(
@@ -262,28 +260,44 @@ server <- function(input, output, session) {
           "in", input$year
         ),
         geo = list(
-          showframe = FALSE,
-          projection = list(type = "natural earth"),
-          bgcolor = "rgba(0,0,0,0)"
+          showframe   = FALSE,
+          projection  = list(type = "natural earth"),
+          bgcolor     = "rgba(0,0,0,0)"
         )
       )
   })
   
   ###########################################
-  ## 6) Cartogram image if "Figur-12-a_b"    ##
+  ## 6) Cartogram image if "Figure-12-a_b" ##
   ###########################################
   output$cartogramImage <- renderUI({
     req(input$year)
+    # Use EXACT facet name "Figure-12-a_b"
     if (input$facet == "Figure-12-a_b") {
+      # If you want them from GitHub:
+      # (Make sure that these .pngs exist in that exact path with same naming)
       tags$div(
         style = "text-align: center; margin-top: 10px;",
         tags$img(
-          src = paste0("cartograms/", input$year, ".png"),
+          src = paste0(
+            "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/main/cartograms/",
+            input$year, ".png"
+          ),
           style = "max-width: 100%; height: auto;"
         )
       )
+      
+      # If you prefer local usage (and the cartograms are in www/cartograms/):
+      # tags$div(
+      #   style = "text-align: center; margin-top: 10px;",
+      #   tags$img(
+      #     src = paste0("cartograms/", input$year, ".png"),
+      #     style = "max-width: 100%; height: auto;"
+      #   )
+      # )
+      
     } else {
-      return(NULL)
+      NULL
     }
   })
 }

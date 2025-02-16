@@ -113,13 +113,13 @@ df_merged %>%
   unique() 
 
 df_china <- tibble::tibble(
-  Country = rep("CN", 28),
+  Country = rep("China", 28),
   Year = 1996:2023,
   Value.x = c(8.78, 8.12, 6.82, 6.73, 7.64, 7.55, 8.4, 9.35, 9.46, 10.74, 
               12.09, 13.64, 9.09, 8.86, 10.1, 8.95, 7.13, 7.05, 6.75, 6.42, 
               6.24, 6.3, 6.25, 5.58, 2, 8.35, 3, 5.31),
   source.x = rep("Figure1-d", 28),
-  iso3c = rep(NA, 28),
+  iso3c = rep("CN", 28),
   Value.y = rep(NA, 28),
   source.y = rep(NA, 28),
   substance = rep(NA, 28)

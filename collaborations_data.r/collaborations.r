@@ -7,23 +7,25 @@ library(data.table)
 ###########################
 ## Example Pair Data     ##
 ###########################
-df <- data.frame(
-  Country = c(rep("China-US", 5), rep("UK-US", 5), rep("Germany-US", 5)),
-  Year    = c(2009,2010,2011,2012,2013, 1996,1997,1998,1999,2000, 1996,1997,1998,1999,2000),
-  Value   = c(0.54,0.80,0.66,0.78,0.93, 0.16,0.15,0.23,0.25,0.12, 0.14,0.16,0.16,0.19,0.16),
-  source  = "Figure1-b",
-  iso3c   = c("CHN","CHN","CHN","CHN","CHN", NA,NA,NA,NA,NA, "DEU","DEU","DEU","DEU","DEU"),
-  stringsAsFactors = FALSE
-)
+# df <- data.frame(
+#   Country = c(rep("China-US", 5), rep("UK-US", 5), rep("Germany-US", 5)),
+#   Year    = c(2009,2010,2011,2012,2013, 1996,1997,1998,1999,2000, 1996,1997,1998,1999,2000),
+#   Value   = c(0.54,0.80,0.66,0.78,0.93, 0.16,0.15,0.23,0.25,0.12, 0.14,0.16,0.16,0.19,0.16),
+#   source  = "Figure1-b",
+#   iso3c   = c("CHN","CHN","CHN","CHN","CHN", NA,NA,NA,NA,NA, "DEU","DEU","DEU","DEU","DEU"),
+#   stringsAsFactors = FALSE
+# )
+
+df <- read.csv("./data/collabs_df.csv")
 
 ################################################
 ## Manual Mapping: Pair -> Both ISO Country Codes
 ################################################
-pair_to_iso <- list(
-  "China-US"   = c("CHN", "USA"),
-  "UK-US"      = c("GBR", "USA"),  # "UK" iso3 is "GBR"
-  "Germany-US" = c("DEU", "USA")
-)
+# pair_to_iso <- list(
+#   "China-US"   = c("CHN", "USA"),
+#   "UK-US"      = c("GBR", "USA"),  # "UK" iso3 is "GBR"
+#   "Germany-US" = c("DEU", "USA")
+# )
 
 #############################
 ## Shiny UI Construction   ##

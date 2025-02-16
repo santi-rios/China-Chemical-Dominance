@@ -1,0 +1,262 @@
+---
+title: "Chemical Space Analysis"
+author: "author"
+format:
+  html:
+    grid: 
+      body-width: 1400px
+    resources: 
+      - shinylive-sw.js
+filters:
+  - shinylive
+---
+
+
+![](https://santi-rios.github.io/r-shinylive-demo/)
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 1000
+library(shiny)
+library(bslib)
+library(dplyr)
+library(plotly)
+library(data.table)
+
+######### Data Preparation #########
+# data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
+data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figureSup.csv"
+
+df <- fread(data_url) %>% 
+  mutate(Country = as.factor(Country), source = as.factor(source)) 
+
+######### Custom Labels #########
+figure_labels <- list(
+  "FigureS-1" = list(y_title = "Contribution Index", map_title = "Chemical Space Contribution"), 
+  "Figure1-b" = list(y_title = "Collaboration Index", map_title = "International Collaborations"),
+  "Figure1-c" = list(y_title = "Collaboration Percentage", map_title = "China-US Collaboration"),
+  "Figure1-d" = list(y_title = "GDP Growth Rate (%)", map_title = "Economic Indicators"),
+  "Figure1-e" = list(y_title = "Researchers (Count)", map_title = "R&D Workforce")
+)
+
+######### APP #########
+ui <- fluidPage(
+  theme = bs_theme(bootswatch = "flatly", primary = "#2c3e50", secondary = "#18bc9c"),
+  
+  # Navbar
+  div(
+    class = "navbar navbar-static-top primary bg-primary",
+    div("China's rise in the chemical space and the decline of US influence", 
+        class = "container-fluid")
+  ),
+  
+  # Control Panel
+  card(
+    card_header("Controls", class = "bg-primary text-light"),
+    card_body(
+      selectInput("facet", "Select figure:",
+                  choices = levels(df$source),
+                  selected = "FigureS-1",
+                  width = "100%"),
+      
+      sliderInput("year", "Year",
+                  min = min(df$Year),
+                  max = max(df$Year) - 1,
+                  value = min(df$Year),
+                  step = 1,
+                  animate = animationOptions(interval = 500, loop = FALSE),
+                  width = "100%"),
+      
+      uiOutput("figure_description")
+    )
+  ),
+  
+  # Visualization Panel
+  card(
+    full_screen = TRUE,
+    card_header("Interactive Visualizations", class = "bg-primary text-light"),
+    card_body(
+      plotlyOutput("emissionsPlot", height = "50vh"),
+      br(),
+      plotlyOutput("worldMap", height = "40vh")
+    )
+  ),
+  
+  # Footer
+  div(
+    class = "footer navbar navbar-static-bottom bg-light",
+    style = "margin-bottom: 20px;",
+    div(
+      class = "container-fluid",
+      "Data source: Bermudez-Montana, Garcia-Chung, et al, 2025 - ",
+      a("ChemRxiv Publication", href = "https://doi.org/10.26434/chemrxiv-2025-d2zc8",
+        style = "color: #18bc9c;")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  ######### Reactive Values #########
+  # Initialize all countries as selected by default
+  selected_countries <- reactiveVal(levels(df$Country))
+  
+  ######### Observers #########
+  
+  # Update selected countries when facet changes
+  observeEvent(input$facet, {
+    countries <- df[source == input$facet, unique(Country)]
+    selected_countries(countries)
+  }, ignoreNULL = FALSE)
+  
+  # Handle plotly legend clicks for emissionsPlot
+  observeEvent(event_data("plotly_legendclick", source = "emissions"), {
+    click <- event_data("plotly_legendclick", source = "emissions")
+    current <- selected_countries()
+    
+    if (!is.null(click$name)) {
+      if (click$name %in% current) {
+        updated <- setdiff(current, click$name)
+      } else {
+        updated <- c(current, click$name)
+      }
+      # Update the reactive selected_countries
+      selected_countries(updated)
+    }
+  })
+  
+  # Reactive axis labels
+  axis_labels <- reactive({
+    figure_labels[[input$facet]] %||% list(y_title = "Value", map_title = "Value")
+  })
+  
+  # Filtered data based on selected countries and facet
+  filtered_data <- reactive({
+    req(input$facet, selected_countries())
+    df[source == input$facet & Country %in% selected_countries()]
+  })
+  
+  ######### UI Outputs #########
+  
+  # Figure description
+  output$figure_description <- renderUI({
+    desc_text <- switch(input$facet,
+      "FigureS-1" = "Country participation in chemical space growth using formula:",
+      "Figure1-b" = "Top international collaborations in chemical research:",
+      "Figure1-c" = "China-US collaborative contributions to new substances:",
+      "Figure1-d" = "Economic indicators and major events timeline:",
+      "Figure1-e" = "Research workforce development metrics:",
+      paste("Displaying:", input$facet)
+    )
+    
+    div(class = "callout",
+        h5(desc_text),
+        if(input$facet == "FigureS-1") withMathJax(helpText("$$C_{i,t} = \\frac{1}{n_t} \\sum_s \\frac{n_{i,s,t}}{n_{a,s,t}}$$"))
+    )
+  })
+  
+  ######### Emissions Plot #########
+  
+  output$emissionsPlot <- renderPlotly({
+    req(filtered_data(), input$year)
+    
+    plot_data <- filtered_data()[Year <= input$year]
+    if (nrow(plot_data) == 0) return(plotly_empty())
+    
+    # Create the line plot
+    fig <- plot_ly(
+      plot_data, 
+      x = ~Year, 
+      y = ~Value, 
+      color = ~Country,
+      colors = "Set1",
+      type = 'scatter', 
+      mode = 'lines+markers', 
+      line = list(width = 2),
+      hoverinfo = 'text',
+      text = ~paste0("<b>", Country, "</b><br>",
+                     axis_labels()$y_title, ": ", round(Value, 2),
+                     "<br>Year: ", Year),
+      source = "emissions",
+      showlegend = TRUE
+    ) 
+    
+    # Add annotations with country names at the end of each line
+    final_data <- plot_data %>% 
+      group_by(Country) %>% 
+      filter(Year == max(Year)) %>% 
+      ungroup()
+    
+    for(i in 1:nrow(final_data)) {
+      fig <- fig %>% add_annotations(
+        x = final_data$Year[i],
+        y = final_data$Value[i],
+        text = final_data$Country[i],
+        xref = "x",
+        yref = "y",
+        xanchor = 'left',
+        yanchor = 'middle',
+        showarrow = FALSE,
+        font = list(size = 12, color = 'black'),
+        xshift = 10
+      )
+    }
+    
+    fig <- fig %>% layout(
+      title = paste("Temporal Analysis -", input$facet),
+      xaxis = list(title = "Year", gridcolor = "#ecf0f1"),
+      yaxis = list(title = axis_labels()$y_title, gridcolor = "#ecf0f1"),
+      hovermode = "closest",
+      plot_bgcolor = "#ffffff",
+      legend = list(orientation = 'h', y = -0.2, itemclick = "toggle", itemdoubleclick = FALSE),
+      margin = list(r = 40)
+    ) 
+    
+    if (input$facet == "Figure1-d") {
+      fig <- fig %>% 
+        add_annotations(x = 2020, y = 10, text = "COVID-19", showarrow = FALSE) %>%
+        add_annotations(x = 2007, y = 15, text = "Global Financial Crisis", showarrow = FALSE)
+    }
+    
+    return(fig)
+  })
+  
+  ######### World Map #########
+  
+  output$worldMap <- renderPlotly({
+    req(filtered_data(), input$year)
+    
+    map_data <- filtered_data()[Year == input$year]
+    if (nrow(map_data) == 0) return(plotly_empty())
+    
+    plot_geo(map_data, height = 300) %>%
+      add_trace(
+        z = ~Value,
+        color = ~Value,
+        colors = "Blues",
+        locations = ~iso3c,
+        text = ~paste0("<b>", Country, "</b><br>",
+                      axis_labels()$map_title, ": ", round(Value, 2)),
+        hoverinfo = "text",
+        marker = list(line = list(color = "white", width = 0.5)),
+        source = "map"
+      ) %>%
+      colorbar(title = axis_labels()$map_title, 
+               orientation = 'h', y = -0.1) %>%
+      layout(
+        title = paste("Global Distribution -", input$facet, "(", input$year, ")"),
+        geo = list(
+          showframe = FALSE,
+          showcoastlines = TRUE,
+          projection = list(type = "natural earth"),
+          bgcolor = "rgba(0,0,0,0)",
+          landcolor = "#f8f9fa"
+        ),
+        margin = list(b = 80)
+      )
+  })
+}
+
+shinyApp(ui, server)
+
+```
+
