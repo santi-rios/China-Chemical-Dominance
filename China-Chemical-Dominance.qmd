@@ -247,7 +247,9 @@ server <- function(input, output, session) {
       add_trace(
         z       = ~Value.x,
         color   = ~Value.x,
-        colors  = "Blues",
+        // colors  = "Blues",
+        // colorscale="Viridis",
+        colorscale="Purples", // Purples, Greens, Reds, Blues
         locations = ~iso3c,
         text    = ~paste(Country, "<br>Value.x:", round(Value.x, 2)),
         hoverinfo = "text",
@@ -268,12 +270,11 @@ server <- function(input, output, session) {
   })
   
   ###########################################
-  ## 6) Cartogram image if "Figure1-a"    ##
+  ## 6) Cartogram image if "Figur-12-a_b"    ##
   ###########################################
   output$cartogramImage <- renderUI({
     req(input$year)
-    # Only show the image if the selected facet is "Figure1-a"
-    if (input$facet == "Figure1-a") {
+    if (input$facet == "Figure-12-a_b") {
       tags$div(
         style = "text-align: center; margin-top: 10px;",
         tags$img(
