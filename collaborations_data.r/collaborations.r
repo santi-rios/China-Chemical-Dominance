@@ -1,38 +1,28 @@
+####
+# please reduce the dependencies and libraries if possible to make the app more efficient
+###
+
 library(shiny)
 library(bslib)
 library(dplyr)
+library(tidyr)
 library(plotly)
 library(data.table)
-library(tidyr)      # for unnest
+library(glue)
+library(countrycode)
 
 #################################################
-## 1) Load the data
+## 1) Load and Preprocess Data
 #################################################
-df_raw <- read.csv("./data/collabs_df_ds.csv", stringsAsFactors = FALSE)
-
-# At the moment, your data has columns:
-#   Country, year, value, source, iso3c
-# But our Shiny code expects columns named "CollabGroup", "Year", "Value", "iso3c".
-# So we rename them appropriately:
-df <- df_raw %>%
-  rename(CollabGroup = Country,
-         Year        = year,
-         Value       = value)
-
-# Quick peek:
-# print(head(df, 10))
+data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/collabs_df_ds.csv" # nolint
+df <- fread(data_url, drop = 1) # drop the first column = rownames
 
 ################################################
 ## 2) Shiny UI Construction
 ################################################
-
 app_theme <- bs_theme(
   version = 5,
-  bootswatch = "lux",
-  primary = "#2c3e50",
-  secondary = "#18bc9c",
-  base_font = font_google("Open Sans"),
-  heading_font = font_google("Raleway")
+  bootswatch = "spacelab"
 )
 
 ui <- page_fluid(
@@ -46,67 +36,73 @@ ui <- page_fluid(
   ),
   
   fluidRow(
-    # Left Column: Control Panel
     column(
       width = 4,
       card(
         style = "margin-bottom: 20px;",
-        card_header("Controls", class = "bg-primary text-white"),
+        card_header("Select a Collaboration Group and a Year: ", class = "bg-primary text-white"),
         card_body(
-          # Collaboration group selection
           selectInput(
             inputId  = "collabSelector",
             label    = "Select Collaboration Group:",
-            choices  = sort(unique(df$CollabGroup)), 
-            selected = sort(unique(df$CollabGroup))[1],
+            choices  = sort(unique(df$CollabGroup)),
+            selected = "China-United States",
+            # select a random collaboration group as default
+            # selected = sample(unique(df$CollabGroup), 1),
             multiple = FALSE,
             width    = "100%"
           ),
-          
-          # Year Slider
           sliderInput(
             inputId = "year", 
             label   = "Year",
             min     = min(df$Year, na.rm = TRUE),
             max     = max(df$Year, na.rm = TRUE),
-            value   = min(df$Year, na.rm = TRUE),
+            value   = max(df$Year, na.rm = TRUE) - 1,
             step    = 1,
+            ticks = FALSE,
             animate = FALSE,
             width   = "100%"
           )
         )
+      ),
+      
+      card(
+        style = "margin-bottom: 20px;",
+        card_header("Collaboration Summary. Click on a country flag for more details bellow the Map.", class = "bg-primary text-white"),
+        card_body(
+          htmlOutput("summaryText"),
+          uiOutput("flagButtons")
+        )
       )
     ),
     
-    # Right Column: Visualization Panel
     column(
       width = 8,
       card(
         style = "margin-bottom: 20px;",
         full_screen = TRUE,
-        card_header("Interactive Visualizations", class = "bg-primary text-white"),
+        card_header("Interactive Visualizations. Select a valid year in the input in order to see more information in the map plot. Click on the Data Table Tab to see more info.", class = "bg-primary text-white"),
         card_body(
-          plotlyOutput("collabLinePlot", height = "50vh"),
-          tags$hr(),
-          plotlyOutput("collabMap", height = "45vh")
+          tabsetPanel(
+            tabPanel("Charts",
+              plotlyOutput("collabLinePlot", height = "50vh"),
+              tags$hr(),
+              plotlyOutput("collabMap", height = "45vh"),
+              htmlOutput("countryDetails")
+            ),
+            tabPanel("Data Table",
+              tableOutput("collabTable")
+            )
+          )
         )
       )
     )
   ),
   
-  # Footer
   tags$footer(
-    style = "
-      background-color: #f8f9fa; 
-      padding: 15px; 
-      margin-top: 20px; 
-      border-top: 1px solid #ddd;
-    ",
-    tags$div(
-      class = "text-center",
-      "Data source: multi-country collaboration dataset"
-    )
-  )
+    style = "background-color: #f8f9fa; padding: 15px; margin-top: 20px; border-top: 1px solid #ddd;",
+    tags$div(class = "text-center", "Data source: China's rise in the chemical space and the decline of US influence", 
+             tags$br(), "https://chemrxiv.org/engage/chemrxiv/article-details/67920ada6dde43c908f688f6"))
 )
 
 ################################################
@@ -118,64 +114,97 @@ server <- function(input, output, session) {
   collab_data <- reactive({
     req(input$collabSelector)
     df %>%
-      filter(CollabGroup == input$collabSelector) %>%
-      arrange(Year)  # Ensure chronological ordering
+      filter(CollabGroup == input$collabSelector)
+  })
+  
+  output$summaryText <- renderUI({
+    data_subset <- collab_data()
+    if (nrow(data_subset) == 0) return("No data for this collaboration group.")
+    
+    all_iso <- unique(unlist(strsplit(paste(data_subset$iso2c, collapse = "-"), "-")))
+    country_names <- countrycode(all_iso, "iso2c", "country.name", warn = FALSE)
+    
+    flag_urls <- paste0('<img src="https://flagcdn.com/16x12/', tolower(all_iso), '.png" width="16">')
+    
+    buttons <- paste0(
+      '<button id="btn_', all_iso, '" type="button" class="btn btn-outline-secondary btn-sm" 
+      onclick="Shiny.setInputValue(\'selectedCountry\', \'', all_iso, '\', {priority: \'event\'});">',
+      flag_urls, " ", country_names, "</button>"
+    )
+    
+    HTML(glue("<b>Collaboration:</b> {input$collabSelector} <br><b>Countries:</b> <br>{paste(buttons, collapse=' ')}"))
+  })
+  
+  output$countryDetails <- renderUI({
+    req(input$selectedCountry)
+    data_subset <- df %>%
+      filter(grepl(input$selectedCountry, iso2c)) %>%
+      summarise(
+        Years = paste(unique(Year), collapse = ", "),
+        AvgValue = mean(Value), 
+        AvgPercentage = mean(Percentage)
+      )
+    
+    HTML(glue("<b>Country:</b> {input$selectedCountry} <br>
+              <b>Appears in Years:</b> {data_subset$Years} <br>
+              <b>Average Collaboration Value:</b> {round(data_subset$AvgValue, 2)} <br>
+              <b>Average Percentage:</b> {round(data_subset$AvgPercentage, 3)}%"))
+  })
+  
+  output$collabTable <- renderTable({
+    collab_data() %>%
+      distinct(Year, Percentage) %>%
+      arrange(Year) %>%
+      mutate(Percentage = paste0(round(Percentage, 5), " %"))
+  })
+  
+  output$collabMap <- renderPlotly({
+    map_subset <- collab_data() %>%
+      filter(Year == selected_year()) %>%
+      separate_rows(iso2c, sep = "-")
+    
+    plot_geo(map_subset) %>%
+      add_trace(locations = ~iso3c, z = ~Value, colors = "Blues", text = ~iso2c) %>%
+      layout(title = "Collaboration Map")
   })
   
   output$collabLinePlot <- renderPlotly({
     data_subset <- collab_data()
-    if (nrow(data_subset) == 0) return(plotly_empty())
     
-    # Aggregate values by year (in case of multiple entries)
-    data_agg <- data_subset %>%
-      group_by(Year) %>%
-      summarise(Value = mean(Value, na.rm = TRUE))
+    if (nrow(data_subset) == 0) {
+      return(plotly_empty(type = "scatter", mode = "lines"))
+    }
     
-    plot_ly(data_agg, x = ~Year, y = ~Value, type = "scatter", mode = "lines+markers",
-            line = list(width = 2, color = "#2c3e50"),
-            marker = list(size = 6, color = "#18bc9c")) %>%
-      layout(title = paste("Time Series for:", input$collabSelector),
-             xaxis = list(title = "Year"), 
-             yaxis = list(title = "Value"))
-  })
-  
-  output$collabMap <- renderPlotly({
-    data_subset <- collab_data()
-    map_subset <- data_subset %>% filter(Year == selected_year())
-    if (nrow(map_subset) == 0) return(plotly_empty())
+    data_for_line <- data_subset %>%
+      distinct(Year, Value)
     
-    # Split ISO3 codes and create mapping data
-    iso_data <- map_subset %>%
-      mutate(iso3c = strsplit(iso3c, "-")) %>%
-      tidyr::unnest(iso3c) %>%
-      distinct(iso3c, .keep_all = TRUE)
-    
-    # Get country names for hover text
-    iso_data <- iso_data %>%
-      mutate(
-        Country = countrycode(iso3c, "iso3c", "country.name", 
-                             custom_match = c("Unknown" = "Unknown"))
-      )
-    
-    plot_geo(iso_data) %>%
-      add_trace(
-        z = ~Value, 
-        locations = ~iso3c,
-        color = ~Value,
-        colors = "Blues",
-        text = ~paste0(
-          "<b>", Country, "</b><br>",
-          "Collaboration Value: ", round(Value, 2), "<br>",
-          "Year: ", selected_year()
-        ),
-        hoverinfo = "text"
-      ) %>%
+    fig <- plot_ly(
+      data       = data_for_line,
+      x          = ~Year,
+      y          = ~Value,
+      type       = "scatter",
+      mode       = "lines+markers",
+      line       = list(width = 2, color = "#2c3e50"),
+      marker     = list(size = 6, color = "#18bc9c"),
+      hoverinfo  = "text",
+      text       = ~paste0(
+        "<b>", input$collabSelector, "</b>",
+        "<br>Year: ", Year,
+        "<br>Value: ", Value
+      ),
+      name       = input$collabSelector
+    ) %>%
       layout(
-        title = paste("Collaboration Countries in", selected_year()),
-        geo = list(showframe = FALSE, projection = list(type = "natural earth"))
+        title = list(text = paste("Time Series for:", input$collabSelector), x = 0.05),
+        xaxis = list(title = "Year", gridcolor = "#ecf0f1"),
+        yaxis = list(title = "Value", gridcolor = "#ecf0f1"),
+        hovermode = "closest",
+        plot_bgcolor = "#ffffff",
+        legend = list(orientation = 'h', x = 0.3, y = -0.2),
+        margin = list(r = 40, t = 50)
       )
+    fig
   })
 }
 
-# Launch the app
 shinyApp(ui, server)

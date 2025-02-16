@@ -128,3 +128,214 @@ df_china <- tibble::tibble(
 df_merged <- rbind(df_merged, df_china)
 
 write.csv(df_merged, "./data/fig_1_df.csv", row.names = FALSE)
+
+
+df_raw <- read.csv("./data/collabs_df_ds.csv", stringsAsFactors = FALSE)
+
+df <- df_raw %>%
+  rename(CollabGroup = Country, Year = year, Value = value) %>%
+  mutate(iso2c = countrycode(iso3c, "iso3c", "iso2c", warn = FALSE))  # Convert to ISO2 codes
+
+write.csv(df, "./data/collabs_df_ds.csv", row.names = FALSE)
+
+# Compute total collaboration values per year and country
+total_per_year <- df %>%
+  group_by(Year) %>%
+  summarise(TotalValue = sum(Value, na.rm = TRUE)) %>%
+  ungroup()
+
+# Merge total values and calculate percentage
+df <- df %>%
+  left_join(total_per_year, by = "Year") %>%
+  mutate(Percentage = (Value / TotalValue) * 100)
+
+write.csv(df, "./data/collabs_df_ds.csv", row.names = FALSE)
+
+################
+
+library(shiny)
+library(bslib)
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(data.table)
+library(glue)
+library(countrycode)
+
+#################################################
+## 1) Load and Preprocess Data
+#################################################
+df_raw <- read.csv("./data/collabs_df_ds.csv", stringsAsFactors = FALSE)
+
+df <- df_raw %>%
+  rename(CollabGroup = Country, Year = year, Value = value) %>%
+  mutate(iso2c = countrycode(iso3c, "iso3c", "iso2c", warn = FALSE))  # Convert ISO3 → ISO2
+
+# Compute total collaboration values per year
+total_per_year <- df %>%
+  group_by(Year) %>%
+  summarise(TotalValue = sum(Value, na.rm = TRUE)) %>%
+  ungroup()
+
+# Merge total values and calculate percentage
+df <- df %>%
+  left_join(total_per_year, by = "Year") %>%
+  mutate(Percentage = (Value / TotalValue) * 100)
+
+################################################
+## 2) Shiny UI Construction
+################################################
+
+app_theme <- bs_theme(
+  version = 5,
+  bootswatch = "litera",
+  primary = "#2c3e50",
+  secondary = "#18bc9c",
+  base_font = font_google("Roboto Mono"),
+  heading_font = font_google("Roboto Condensed")
+)
+
+ui <- page_fluid(
+  theme = app_theme,
+  
+  tags$div(
+    style = "background-color: #2c3e50; padding: 20px; border-radius: 4px; margin-bottom: 20px;",
+    tags$h1("Collaboration Explorer", style = "color: #fff; text-align: center; margin: 0;"),
+    tags$p("Explore multi-country collaborations over time.",
+           style = "color: #eee; text-align: center; margin: 0;")
+  ),
+  
+  fluidRow(
+    column(
+      width = 4,
+      card(
+        style = "margin-bottom: 20px;",
+        card_header("Controls", class = "bg-primary text-white"),
+        card_body(
+          selectInput(
+            inputId  = "collabSelector",
+            label    = "Select Collaboration Group:",
+            choices  = sort(unique(df$CollabGroup)),
+            selected = sort(unique(df$CollabGroup))[1], 
+            multiple = FALSE,
+            width    = "100%"
+          ),
+          
+          sliderInput(
+            inputId = "year", 
+            label   = "Year",
+            min     = min(df$Year, na.rm = TRUE),
+            max     = max(df$Year, na.rm = TRUE),
+            value   = max(df$Year, na.rm = TRUE) - 1,
+            step    = 1,
+            animate = FALSE,
+            width   = "100%"
+          )
+        )
+      ),
+      
+      card(
+        style = "margin-bottom: 20px;",
+        card_header("Collaboration Summary", class = "bg-primary text-white"),
+        card_body(
+          htmlOutput("summaryText"),
+          uiOutput("flagButtons")
+        )
+      )
+    ),
+    
+    column(
+      width = 8,
+      card(
+        style = "margin-bottom: 20px;",
+        full_screen = TRUE,
+        card_header("Interactive Visualizations", class = "bg-primary text-white"),
+        card_body(
+          plotlyOutput("collabLinePlot", height = "50vh"),
+          tags$hr(),
+          plotlyOutput("collabMap", height = "45vh")
+        )
+      )
+    )
+  ),
+  
+  fluidRow(
+    column(
+      width = 12,
+      card(
+        card_header("Detailed Collaboration Data", class = "bg-primary text-white"),
+        card_body(
+          div(style = "max-height: 400px; overflow-y: auto;", tableOutput("collabTable")),
+          htmlOutput("countryDetails")
+        )
+      )
+    )
+  ),
+  
+  tags$footer(
+    style = "background-color: #f8f9fa; padding: 15px; margin-top: 20px; border-top: 1px solid #ddd;",
+    tags$div(class = "text-center", "Data source: multi-country collaboration dataset")
+  )
+)
+
+################################################
+## 3) Shiny Server Logic
+################################################
+server <- function(input, output, session) {
+  
+  selected_year <- debounce(reactive(input$year), 300)
+  
+  collab_data <- reactive({
+    req(input$collabSelector)
+    df %>%
+      filter(CollabGroup == input$collabSelector)
+  })
+  
+  output$summaryText <- renderUI({
+    data_subset <- collab_data()
+    if (nrow(data_subset) == 0) return("No data for this collaboration group.")
+    
+    all_iso <- data_subset$iso3c %>%
+      paste(collapse = "-") %>%
+      strsplit("-") %>%
+      unlist() %>%
+      unique()
+    
+    n_countries <- length(all_iso)
+    
+    years_avail  <- sort(unique(data_subset$Year))
+    earliestYear <- min(years_avail, na.rm = TRUE)
+    latestYear   <- max(years_avail, na.rm = TRUE)
+    
+    country_names <- countrycode(all_iso, "iso3c", "country.name", warn = FALSE)
+    flag_urls <- paste0('<img src="https://flagcdn.com/16x12/', tolower(all_iso), '.png" width="16">')
+    
+    buttons <- paste0(
+      '<button type="button" class="btn btn-outline-secondary btn-sm" onclick="Shiny.setInputValue(\'selectedCountry\', \'', all_iso, '\');">',
+      flag_urls, " ", country_names, "</button>"
+    )
+    
+    HTML(glue("Collaboration '{input$collabSelector}' involves {n_countries} countries ",
+              "({paste(all_iso, collapse=', ')}).<br>Data spans from year {earliestYear} to {latestYear}.<br>",
+              "<b>Countries:</b> <br>{paste(buttons, collapse=' ')}"))
+  })
+  
+  output$collabTable <- renderTable({
+    collab_data() %>%
+      distinct(Year, Percentage) %>%
+      arrange(Year) %>%
+      mutate(Percentage = paste0(round(Percentage, 3), " %"))
+  })
+  
+  output$collabMap <- renderPlotly({
+    map_subset <- collab_data() %>%
+      filter(Year == selected_year()) %>%
+      separate_rows(iso2c, sep = "-") 
+    
+    plot_geo(map_subset) %>%
+      add_trace(locations = ~iso2c, z = ~Value, colors = "Blues", text = ~iso2c) %>%
+      layout(title = "Collaboration Map")
+  })
+}
+
+shinyApp(ui, server)
