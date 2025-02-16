@@ -25,18 +25,29 @@ library(data.table)
 
 ######### Data Preparation #########
 # data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
-data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figureSup.csv"
+data_url <- "./data/fig_supplements_filtered.csv"
 
 df <- fread(data_url) %>% 
   mutate(Country = as.factor(Country), source = as.factor(source)) 
 
 ######### Custom Labels #########
 figure_labels <- list(
-  "FigureS-1" = list(y_title = "Contribution Index", map_title = "Chemical Space Contribution"), 
-  "Figure1-b" = list(y_title = "Collaboration Index", map_title = "International Collaborations"),
-  "Figure1-c" = list(y_title = "Collaboration Percentage", map_title = "China-US Collaboration"),
-  "Figure1-d" = list(y_title = "GDP Growth Rate (%)", map_title = "Economic Indicators"),
-  "Figure1-e" = list(y_title = "Researchers (Count)", map_title = "R&D Workforce")
+  "FigureS-2" = list(y_title = "% of GDP invested in research", map_title = "Research and development expenditure for China and the US"), 
+
+  "FigureS-3" = list(y_title = "General Gov. Debt (% of GDP)", map_title = "Govermment debt as % of GDP"), 
+
+  "FigureS-4_organicKW" = list(y_title = "Frequency", map_title = "Words in keywords organic"),
+
+  "FigureS-4_organoMetallicKW" = list(y_title = "Frequency", map_title = "Words in keywords organometallic"),
+
+  "FigureS-5" = list(y_title = "% of substances contributed by e/country", map_title = "Countries participation in chemical space growth"), 
+
+  "FigureS-6" = list(y_title = "% of substances contributed by e/collab.", map_title = "Top 10 international collaborations for expanding the organic chemical space"), 
+
+  "FigureS-7a_b" = list(y_title = "% of organometallic chemical space", map_title = "Organometallic CS spanned by elements"), 
+
+  "FigureS-7a_e" = list(y_title = "% of rare-earth chemical space", map_title = "REE CS spanned by elements")
+
 )
 
 ######### APP #########
@@ -46,25 +57,25 @@ ui <- fluidPage(
   # Navbar
   div(
     class = "navbar navbar-static-top primary bg-primary",
-    div("China's rise in the chemical space and the decline of US influence", 
-        class = "container-fluid")
+    div("China's rise in the chemical space and the decline of US influence, Supplementary Figures", class = "container-fluid")
   ),
   
   # Control Panel
   card(
-    card_header("Controls", class = "bg-primary text-light"),
+    card_header("Select Figure and Year", class = "bg-primary text-light"),
     card_body(
       selectInput("facet", "Select figure:",
                   choices = levels(df$source),
-                  selected = "FigureS-1",
+                  selected = "FigureS-2",
                   width = "100%"),
       
       sliderInput("year", "Year",
-                  min = min(df$Year),
+                  min = min(df$Year) + 1,
                   max = max(df$Year) - 1,
-                  value = min(df$Year),
+                  value = max(df$Year) - 1,
                   step = 1,
-                  animate = animationOptions(interval = 500, loop = FALSE),
+                  # animate = animationOptions(interval = 500, loop = FALSE),
+                  animate = FALSE,
                   width = "100%"),
       
       uiOutput("figure_description")
@@ -140,11 +151,14 @@ server <- function(input, output, session) {
   # Figure description
   output$figure_description <- renderUI({
     desc_text <- switch(input$facet,
-      "FigureS-1" = "Country participation in chemical space growth using formula:",
-      "Figure1-b" = "Top international collaborations in chemical research:",
-      "Figure1-c" = "China-US collaborative contributions to new substances:",
-      "Figure1-d" = "Economic indicators and major events timeline:",
-      "Figure1-e" = "Research workforce development metrics:",
+      "FigureS-2" = "Research and development expenditure for China and the US",
+      "FigureS-3" = "General Gov. Debt (% of GDP)", map_title = "Govermment debt as % of GDP",
+      "FigureS-4_organicKW" = "Words in keywords organic",
+      "FigureS-4_organoMetallicKW" = "Words in keywords organometallic",
+      "FigureS-5" = "Countries participation in chemical space growth",
+      "FigureS-6" = "Top 10 international collaborations for expanding the organic chemical space",
+      "FigureS-7a_b" = "Organometallic CS spanned by elements",
+      "FigureS-7a_e" = "REE CS spanned by elements",
       paste("Displaying:", input$facet)
     )
     
