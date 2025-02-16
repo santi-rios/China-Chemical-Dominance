@@ -66,14 +66,15 @@ ui <- fluidPage(
   ),
   
   div(class = "card",
-      div(class = "card-header", "Control Panel"),
+      div(class = "card-header", "Select a Year and Maximum of 10 Countries. A random country is selected by default. Single click to select/deselect a country. Double click to select/deselect all."),
       div(class = "card-body",
           
           # Year Slider
           sliderInput("year", "Select Year",
-                      min = min(df$Year, na.rm = TRUE), 
-                      max = max(df$Year, na.rm = TRUE),
+                      min = min(df$Year, na.rm = TRUE) + 1, 
+                      max = max(df$Year, na.rm = TRUE) - 1,
                       value = min(df$Year, na.rm = TRUE),
+                      selected = max(df$Year, na.rm = TRUE) -1,
                       step = 1, width = "100%"),
           
           # Metric (figure) selection
@@ -92,7 +93,7 @@ ui <- fluidPage(
   ),
   
   div(class = "card",
-      div(class = "card-header", "Analytical Views"),
+      div(class = "card-header", "Analytical Interactive Plots. Hover over the plots for more information. The map shows the latest data available. The cartogram is only available for the first figure."),
       div(class = "card-body",
           plotlyOutput("combinedPlot", height = "500px"),
           plotlyOutput("geoPlot", height = "400px"),
@@ -105,7 +106,6 @@ ui <- fluidPage(
 ## Shiny Server
 ################
 server <- function(input, output, session) {
-  
   ###########################
   ## 1) Update country list ##
   ###########################
@@ -115,10 +115,8 @@ server <- function(input, output, session) {
     valid_countries <- df[source.x == current_metric, unique(Country)]
     valid_countries <- sort(as.character(valid_countries))  # alphabetical
     
-    # By default, we select "United States" and "China" if present
-    default_sel <- c()
-    if ("United States" %in% valid_countries) default_sel <- c(default_sel, "United States")
-    if ("China" %in% valid_countries)         default_sel <- c(default_sel, "China")
+    # By default, select a random country if available
+    default_sel <- if(length(valid_countries) > 0) sample(valid_countries, 1) else character(0)
     
     # Update the input
     updateSelectizeInput(session, "countrySelector", 
@@ -126,7 +124,6 @@ server <- function(input, output, session) {
                          selected = default_sel,
                          server   = TRUE)
   })
-  
   #############################################
   ## 2) Reactive subset based on user inputs ##
   #############################################
@@ -185,7 +182,7 @@ server <- function(input, output, session) {
     
     # Build the base ggplot with lines for Value.x
     gg_base <- ggplot(data_subset, aes(x = Year, color = Country)) +
-      geom_line(aes(y = Value.x), linewidth = 1, na.rm = TRUE) +
+      geom_line(aes(y = Value.x, linetype = Country), na.rm = TRUE) +
       scale_color_manual(values = color_map) +
       labs(
         title = paste0(
@@ -217,7 +214,7 @@ server <- function(input, output, session) {
     # Convert to plotly
     p <- ggplotly(gg_base, tooltip = c("x", "y", "colour", "shape")) %>%
       layout(
-        legend = list(orientation = "h", y = -0.3),
+        legend = list(orientation = "v"), # , y = -0.3
         hovermode = "closest"
       )
     
