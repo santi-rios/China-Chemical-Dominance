@@ -1,17 +1,12 @@
-
-#| standalone: true
-#| viewerHeight: 1000
-
 library(shiny)
 library(bslib)
 library(dplyr)
 library(plotly)
 library(data.table)
 
-###############
-## Example Data
-###############
-## For illustration, here's a small version of your CSV data as a data.frame:
+###########################
+## Example Pair Data     ##
+###########################
 df <- data.frame(
   Country = c(rep("China-US", 5), rep("UK-US", 5), rep("Germany-US", 5)),
   Year    = c(2009,2010,2011,2012,2013, 1996,1997,1998,1999,2000, 1996,1997,1998,1999,2000),
@@ -22,74 +17,101 @@ df <- data.frame(
 )
 
 ################################################
-##  Manual Mapping: Pair -> Both ISO Country Codes
-##  So we can highlight both countries in the map
+## Manual Mapping: Pair -> Both ISO Country Codes
 ################################################
 pair_to_iso <- list(
   "China-US"   = c("CHN", "USA"),
   "UK-US"      = c("GBR", "USA"),  # "UK" iso3 is "GBR"
   "Germany-US" = c("DEU", "USA")
-  # Add more as needed
 )
 
 #############################
 ## Shiny UI Construction   ##
 #############################
 
-ui <- fluidPage(
-  theme = bs_theme(bootswatch = "flatly", primary = "#2c3e50", secondary = "#18bc9c"),
+# Create a Bootstrap 5 theme using bslib:
+app_theme <- bs_theme(
+  version = 5,          # Use Bootstrap 5
+  bootswatch = "lux",   # A clean, professional look
+  primary = "#2c3e50",  # Override a couple of colors
+  secondary = "#18bc9c",
+  base_font = font_google("Open Sans"),  # Custom fonts (optional)
+  heading_font = font_google("Raleway")
+)
+
+ui <- page_fluid(
+  theme = app_theme,
   
-  # Navbar
-  div(
-    class = "navbar navbar-static-top primary bg-primary",
-    div("Paired Countries App", class = "container-fluid")
+  # A top-level container with some spacing and a custom background color
+  tags$div(
+    style = "background-color: #2c3e50; padding: 20px; border-radius: 4px; margin-bottom: 20px;",
+    tags$h1("Paired Collaboration Explorer", style = "color: #fff; text-align: center; margin: 0;"),
+    tags$p("Explore scientific or technological collaborations between paired countries over time.",
+           style = "color: #eee; text-align: center; margin: 0;")
   ),
   
-  # Control Panel
-  card(
-    card_header("Controls", class = "bg-primary text-light"),
-    card_body(
-      # Pair selection
-      selectInput(
-        inputId  = "pairSelector",
-        label    = "Select Country Pair:",
-        choices  = sort(unique(df$Country)), 
-        selected = "China-US",
-        multiple = FALSE,
-        width    = "100%"
-      ),
-      
-      # Year Slider
-      sliderInput(
-        inputId = "year", 
-        label   = "Year",
-        min     = min(df$Year, na.rm = TRUE),
-        max     = max(df$Year, na.rm = TRUE),
-        value   = min(df$Year, na.rm = TRUE),
-        step    = 1,
-        animate = FALSE,
-        width   = "100%"
+  # Layout using cards in a row
+  fluidRow(
+    # Left Column: Control Panel
+    column(
+      width = 4,
+      card(
+        style = "margin-bottom: 20px;",
+        card_header("Controls", class = "bg-primary text-white"),
+        card_body(
+          # Pair selection
+          selectInput(
+            inputId  = "pairSelector",
+            label    = "Select Country Pair:",
+            choices  = sort(unique(df$Country)), 
+            selected = "China-US",
+            multiple = FALSE,
+            width    = "100%"
+          ),
+          
+          # Year Slider
+          sliderInput(
+            inputId = "year", 
+            label   = "Year",
+            min     = min(df$Year, na.rm = TRUE),
+            max     = max(df$Year, na.rm = TRUE),
+            value   = min(df$Year, na.rm = TRUE),
+            step    = 1,
+            animate = FALSE,
+            width   = "100%"
+          )
+        )
+      )
+    ),
+    
+    # Right Column: Visualization Panel
+    column(
+      width = 8,
+      card(
+        style = "margin-bottom: 20px;",
+        full_screen = TRUE,
+        card_header("Interactive Visualizations", class = "bg-primary text-white"),
+        card_body(
+          plotlyOutput("pairLinePlot", height = "50vh"),
+          tags$hr(),
+          plotlyOutput("pairMap", height = "45vh")
+        )
       )
     )
   ),
   
-  # Visualization Panel
-  card(
-    full_screen = TRUE,
-    card_header("Interactive Visualizations", class = "bg-primary text-light"),
-    card_body(
-      plotlyOutput("pairLinePlot", height = "50vh"),
-      br(),
-      plotlyOutput("pairMap", height = "40vh")
-    )
-  ),
-  
   # Footer
-  div(
-    class = "footer navbar navbar-static-bottom bg-light",
-    style = "margin-bottom: 20px;",
-    div(class = "container-fluid",
-        "Data source: Pair-based collaboration dataset")
+  tags$footer(
+    style = "
+      background-color: #f8f9fa; 
+      padding: 15px; 
+      margin-top: 20px; 
+      border-top: 1px solid #ddd;
+    ",
+    tags$div(
+      class = "text-center",
+      "Data source: Pair-based collaboration dataset"
+    )
   )
 )
 
@@ -114,20 +136,20 @@ server <- function(input, output, session) {
   output$pairLinePlot <- renderPlotly({
     data_subset <- pair_data()
     
-    # If no rows, return empty
+    # If no rows, return an empty placeholder
     if (nrow(data_subset) == 0) {
       return(plotly_empty(type = "scatter", mode = "lines"))
     }
     
-    # Basic line+marker
+    # Basic line+marker plotly
     fig <- plot_ly(
       data       = data_subset,
       x          = ~Year,
       y          = ~Value,
       type       = "scatter",
       mode       = "lines+markers",
-      line       = list(width = 2),
-      marker     = list(size = 6),
+      line       = list(width = 2, color = "#2c3e50"),
+      marker     = list(size = 6, color = "#18bc9c"),
       hoverinfo  = "text",
       text       = ~paste0(
         "<b>", Country, "</b>",
@@ -137,13 +159,22 @@ server <- function(input, output, session) {
       name       = ~Country
     ) %>%
       layout(
-        title = paste("Time Series for:", input$pairSelector),
-        xaxis = list(title = "Year", gridcolor = "#ecf0f1"),
-        yaxis = list(title = "Value", gridcolor = "#ecf0f1"),
+        title = list(
+          text = paste("Time Series for:", input$pairSelector),
+          x = 0.05
+        ),
+        xaxis = list(
+          title = "Year", 
+          gridcolor = "#ecf0f1"
+        ),
+        yaxis = list(
+          title = "Value", 
+          gridcolor = "#ecf0f1"
+        ),
         hovermode = "closest",
         plot_bgcolor = "#ffffff",
-        legend = list(orientation = 'h', y = -0.2),
-        margin = list(r = 40)
+        legend = list(orientation = 'h', x = 0.3, y = -0.2),
+        margin = list(r = 40, t = 50)
       )
     
     fig
@@ -172,8 +203,6 @@ server <- function(input, output, session) {
     }
     
     # We'll create a small 2-row data frame for the map
-    # so each of the two iso codes is shown with the same Value
-    # from the single row for that year.
     map_data <- data.frame(
       iso3c = iso_codes,
       Value = rep(map_row$Value, length(iso_codes)),
@@ -198,7 +227,10 @@ server <- function(input, output, session) {
         y           = -0.1
       ) %>%
       layout(
-        title = paste("Map for", input$pairSelector, "in", selected_year()),
+        title = list(
+          text = paste("Map for", input$pairSelector, "in", selected_year()),
+          x = 0.05
+        ),
         geo = list(
           showframe     = FALSE,
           showcoastlines = TRUE,
