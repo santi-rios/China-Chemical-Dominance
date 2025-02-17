@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-36290ceb9dd06978b32c5bb1cb5dc397.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1491de633e695408e41adbfbdf21fc0f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/run-python-blocks.js" type="module"></script>
@@ -95,11 +95,11 @@ ul.task-list li input[type="checkbox"] {
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./China-Chemical-Dominance.html"> 
-<span class="menu-text">Figure 1</span></a>
+<span class="menu-text">China’s rise in the CS</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./figure2.html"> 
-<span class="menu-text">Figure 2</span></a>
+    <a class="nav-link active" href="./sup.html" aria-current="page"> 
+<span class="menu-text">Supplementary Materials</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -112,9 +112,8 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/67920ada6dde43c908f688f6/original/china-s-rise-in-the-chemical-space-and-the-decline-of-us-influence.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/collabs_df_ds.csv"><i class="bi bi-file-code"></i>Data Code</a></li></ul></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -143,6 +142,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="supplementary-materials" class="level2">
+<h2 class="anchored" data-anchor-id="supplementary-materials">Supplementary Materials</h2>
+<p><img src="./figures/periodic_table.gif" class="img-fluid"></p>
 <pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
 #|   shinylive does not work in self-contained HTML documents.
 #|   Please set `embed-resources: false` in your metadata.
@@ -155,19 +157,31 @@ library(plotly)
 library(data.table)
 
 ######### Data Preparation #########
-# data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
-data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figureSup.csv"
+data_url &lt;- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/fig_supplements_filtered.csv"
+# data_url &lt;- "./data/fig_supplements_filtered.csv"
 
 df &lt;- fread(data_url) %&gt;% 
-  mutate(Country = as.factor(Country), source = as.factor(source)) 
+  mutate(Country = as.factor(Country), source = as.factor(source)) %&gt;%
+  filter(source != c("FigureS-2", "FigureS-4_organoMetallicKW", "FigureS-5", "FigureS-6", "FigureS-7a_b"))
 
 ######### Custom Labels #########
 figure_labels &lt;- list(
-  "FigureS-1" = list(y_title = "Contribution Index", map_title = "Chemical Space Contribution"), 
-  "Figure1-b" = list(y_title = "Collaboration Index", map_title = "International Collaborations"),
-  "Figure1-c" = list(y_title = "Collaboration Percentage", map_title = "China-US Collaboration"),
-  "Figure1-d" = list(y_title = "GDP Growth Rate (%)", map_title = "Economic Indicators"),
-  "Figure1-e" = list(y_title = "Researchers (Count)", map_title = "R&amp;D Workforce")
+  "FigureS-2" = list(y_title = "% of GDP invested in research", map_title = "Research and development expenditure for China and the US"), 
+
+  "FigureS-3" = list(y_title = "General Gov. Debt (% of GDP)", map_title = "Govermment debt as % of GDP"), 
+
+  "FigureS-4_organicKW" = list(y_title = "Frequency", map_title = "Words in keywords organic"),
+
+  "FigureS-4_organoMetallicKW" = list(y_title = "Frequency", map_title = "Words in keywords organometallic"),
+
+  "FigureS-5" = list(y_title = "% of substances contributed by e/country", map_title = "Countries participation in chemical space growth"), 
+
+  "FigureS-6" = list(y_title = "% of substances contributed by e/collab.", map_title = "Top 10 international collaborations for expanding the organic chemical space"), 
+
+  "FigureS-7a_b" = list(y_title = "% of organometallic chemical space", map_title = "Organometallic CS spanned by elements"), 
+
+  "FigureS-7a_e" = list(y_title = "% of rare-earth chemical space", map_title = "REE CS spanned by elements")
+
 )
 
 ######### APP #########
@@ -177,25 +191,25 @@ ui &lt;- fluidPage(
   # Navbar
   div(
     class = "navbar navbar-static-top primary bg-primary",
-    div("China's rise in the chemical space and the decline of US influence", 
-        class = "container-fluid")
+    div("China's rise in the chemical space and the decline of US influence, Supplementary Figures", class = "container-fluid")
   ),
   
   # Control Panel
   card(
-    card_header("Controls", class = "bg-primary text-light"),
+    card_header("Select Figure and Year", class = "bg-primary text-light"),
     card_body(
       selectInput("facet", "Select figure:",
                   choices = levels(df$source),
-                  selected = "FigureS-1",
+                  selected = "FigureS-5",
                   width = "100%"),
       
       sliderInput("year", "Year",
-                  min = min(df$Year),
+                  min = min(df$Year) + 1,
                   max = max(df$Year) - 1,
-                  value = min(df$Year),
+                  value = max(df$Year) - 1,
                   step = 1,
-                  animate = animationOptions(interval = 500, loop = FALSE),
+                  # animate = animationOptions(interval = 500, loop = FALSE),
+                  animate = FALSE,
                   width = "100%"),
       
       uiOutput("figure_description")
@@ -271,11 +285,14 @@ server &lt;- function(input, output, session) {
   # Figure description
   output$figure_description &lt;- renderUI({
     desc_text &lt;- switch(input$facet,
-      "FigureS-1" = "Country participation in chemical space growth using formula:",
-      "Figure1-b" = "Top international collaborations in chemical research:",
-      "Figure1-c" = "China-US collaborative contributions to new substances:",
-      "Figure1-d" = "Economic indicators and major events timeline:",
-      "Figure1-e" = "Research workforce development metrics:",
+      "FigureS-2" = "Research and development expenditure for China and the US",
+      "FigureS-3" = "General Gov. Debt (% of GDP)", map_title = "Govermment debt as % of GDP",
+      "FigureS-4_organicKW" = "Words in keywords organic",
+      "FigureS-4_organoMetallicKW" = "Words in keywords organometallic",
+      "FigureS-5" = "Countries participation in chemical space growth",
+      "FigureS-6" = "Top 10 international collaborations for expanding the organic chemical space",
+      "FigureS-7a_b" = "Organometallic CS spanned by elements",
+      "FigureS-7a_e" = "REE CS spanned by elements",
       paste("Displaying:", input$facet)
     )
     
@@ -391,6 +408,7 @@ shinyApp(ui, server)
 </code></pre>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
