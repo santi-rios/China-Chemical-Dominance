@@ -11,6 +11,8 @@ website:
     left:
       - text: "Figure 1"
         file: China-Chemical-Dominance.qmd
+      - text: "Figure 2"
+        file: figure2.qmd  
   page-footer: 
     left: "https://chemrxiv.org/engage/chemrxiv/article-details/67920ada6dde43c908f688f6"
     right: 

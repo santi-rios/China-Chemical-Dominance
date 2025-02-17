@@ -1,3 +1,35 @@
+## Plot colaboraciones
+- seleccionar de 1981 a 2022
+- eliminar NA, aunque también se quita Namibia
+ Convert ISO3 to ISO2
+df[, iso2c := countrycode(iso3c, "iso3c", "iso2c", warn = FALSE)]
+
+ Compute Total Collaborations per Year
+total_per_year <- df[, .(TotalValue = sum(Value, na.rm = TRUE)), by = Year]
+df <- merge(df, total_per_year, by = "Year")
+df[, Percentage := (Value / TotalValue) * 100]
+
+This R code snippet is working with a data frame (or data table) and is modifying or creating a new column called iso2c. The operation is performed on the column CollabGroup by splitting each string using the hyphen ("-") as a separator. For each element in the split result (representing individual country names), the code uses the countrycode function to convert the country's full name to its ISO 2-letter country code. The warn = FALSE parameter is used to disable warning messages during the conversion process. Finally, the resulting ISO codes are concatenated back together into a single string with hyphens as the separator.
+
+This approach leverages vectorized operations in R through the sapply function, applying the conversion and concatenation steps to each entry in CollabGroup. The use of := in data.table syntax indicates that the iso2c column is being added or updated by reference, ensuring efficient in-place modifications without copying the entire data structure.
+
+    # Convert ISO3 to ISO2, but keep the original ISO3 for later use
+ it needs to 
+ Generate proper ISO codes from CollabGroup names
+df[, iso2c := sapply(strsplit(CollabGroup, "-"), function(countries) {
+  codes <- countrycode(countries, "country.name", "iso2c", warn = FALSE)
+  paste(codes, collapse = "-")
+})]
+
+
+## Plot chemichal space
+
+
+
+
+
+## Plot suplementos
+
 
 ## Mak Plank Servers
 
