@@ -9,10 +9,10 @@ website:
   navbar:
     search: true
     left:
-      - text: "Figure 1"
+      - text: "China’s rise in the CS"
         file: China-Chemical-Dominance.qmd
-      - text: "Figure 2"
-        file: figure2.qmd  
+      - text: "Supplementary Materials"
+        file: supp.qmd  
   page-footer: 
     left: "https://chemrxiv.org/engage/chemrxiv/article-details/67920ada6dde43c908f688f6"
     right: 
@@ -29,6 +29,13 @@ format:
       margin-width: 200px
     toc: true
     theme: litera
+    other-links:
+      - text: NASA Open Data
+        href: https://data.nasa.gov/
+    code-links:
+      - text: Data Import Code
+        icon: file-code
+        href: data-import.py
 
 # Attach shinylive to every page
 filters:

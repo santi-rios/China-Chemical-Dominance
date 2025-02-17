@@ -11,8 +11,8 @@ filters:
   - shinylive
 ---
 
+## Supplementary Materials
 
-![](https://santi-rios.github.io/r-shinylive-demo/)
 
 ```{shinylive-r}
 #| standalone: true
@@ -28,7 +28,8 @@ library(data.table)
 data_url <- "./data/fig_supplements_filtered.csv"
 
 df <- fread(data_url) %>% 
-  mutate(Country = as.factor(Country), source = as.factor(source)) 
+  mutate(Country = as.factor(Country), source = as.factor(source)) %>%
+  filter(source != c("FigurS-2", "FigureS-4_organoMetallicKW", "FigureS-5", "FigureS-6", "FigureS-7a_b"))
 
 ######### Custom Labels #########
 figure_labels <- list(
