@@ -262,3 +262,48 @@ str(final_df)
 final_df <- final_df %>% select(-X)
 
 write.csv(final_df, "./data/collabs_df_ds.csv", row.names = FALSE)  
+
+
+#########
+library(tidyverse)
+library(countrycode)
+library(data.table)
+
+# Load Data Efficiently
+data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/collabs_df_ds.csv"
+df <- fread(data_url, na.strings = c("", "NA"))  
+
+str(df)
+
+# Convert ISO3 to ISO2, but keep the original ISO3 for later use
+# it needs to 
+# Generate proper ISO codes from CollabGroup names
+df[, iso2c := sapply(
+  strsplit(CollabGroup, "-"),
+  function(countries) {
+    codes <- countrycode(countries, "country.name", "iso2c", warn = FALSE)
+    paste(codes, collapse = "-")
+  }
+)]
+
+
+# Convert ISO3 to ISO2
+# df[, iso2c := countrycode(iso3c, "iso3c", "iso2c", warn = FALSE)]
+
+# Compute Total Collaborations per Year
+total_per_year <- df[, .(TotalValue = sum(Value, na.rm = TRUE)), by = Year]
+df <- merge(df, total_per_year, by = "Year")
+df[, Percentage := (Value / TotalValue) * 100]
+
+
+# Compute Total Collaborations per Year
+total_per_year <- df[, .(TotalValue = sum(Value, na.rm = TRUE)), by = Year]
+
+# Merge the total values back into the original data
+df <- merge(df, total_per_year, by = "Year")
+
+# Compute the percentage of each collaboration group
+df[, Percentage := (Value / TotalValue) * 100]
+
+# Save the updated data
+write.csv(df, "./data/collabs_df_ds.csv", row.names = FALSE)
