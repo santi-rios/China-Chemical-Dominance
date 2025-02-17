@@ -22,6 +22,60 @@ df[, iso2c := sapply(strsplit(CollabGroup, "-"), function(countries) {
 })]
 
 
+
+```r
+library(tidyverse)
+
+df %>%
+  # Count how many countries are in each row (assumes "-" is the separator)
+  mutate(n_countries = str_count(CollabGroup, "-") + 1,
+         # Divide the row's Value equally among the countries
+         individual_value = Value / n_countries) %>%
+  # Separate rows so that each row contains one country
+  separate_rows(CollabGroup, sep = "-") %>%
+  # Sum the individual contributions per country, per year, per subset (source)
+  group_by(source, Year, CollabGroup) %>%
+  summarise(total_contrib = sum(individual_value, na.rm = TRUE), .groups = "drop") %>%
+  # For each source and year, compute the total contribution
+  group_by(source, Year) %>%
+  mutate(year_total = sum(total_contrib, na.rm = TRUE),
+         percentage = total_contrib / year_total * 100) %>%
+  ungroup()
+```
+
+### Explanation of the Steps
+
+1. **Count the Countries:**  
+   We use `str_count(CollabGroup, "-") + 1` to determine the number of countries in each row. For example, if `CollabGroup` is `"Austria-Egypt-United Arab Emirates"`, this will return `3`.
+
+2. **Distribute the Value:**  
+   We create a new column `individual_value` by dividing `Value` by `n_countries`. This way, if a row represents a collaboration among 3 countries with a `Value` of 4, each country is assigned \(4/3 \approx 1.33\).
+
+3. **Separate Rows:**  
+   With `separate_rows(CollabGroup, sep = "-")`, we split the `CollabGroup` column so that each country gets its own row while keeping the computed `individual_value`.
+
+4. **Aggregate by Country, Year, and Subset:**  
+   We group by `source`, `Year`, and `CollabGroup` and then sum the `individual_value` for each country. This gives the total contribution of each country for each year and each subset.
+
+5. **Calculate Percentages:**  
+   Next, we group by `source` and `Year` and calculate the total contribution for that year (`year_total`). The percentage is then computed as  
+   \[
+   \text{percentage} = \frac{\text{total_contrib}}{\text{year_total}} \times 100
+   \]
+   
+This code will give you a dataframe where, for each country (even when it originally appeared in a group) and for each year and subset, you have the total contribution and its percentage relative to the total Value for that year and subset.
+
+Feel free to adjust the separator in `separate_rows()` if your data uses a different delimiter.
+
+
+------
+
+subset 
+
+  - original = 126,285
+  - muestra - 30,000
+    - tiempo: 1284.39 sec elapsed
+
 ## Plot chemichal space
 
 
