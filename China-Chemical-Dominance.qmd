@@ -1,39 +1,39 @@
 ---
-title: "China's rise in the chemical space and the decline of US influence"
-author: "Marisol Bermúdez-Montaña, Angel Garcia-Chung, Peter F. Stadler ,Jürgen Jost, Guillermo Restrepo "
-date-modified: "today"
-title-block-banner: true
-doi: "10.26434/chemrxiv-2025-d2zc8"
-license: CC
 format:
   html:
     grid: 
-      body-width: 1400px
+      body-width: 900px
+      gutter-width: 20px
     resources: 
       - shinylive-sw.js
       - df.csv
-    toc-location: body
 filters:
   - shinylive
 ---
 
 
-## Countrywise expansion of the chemical space
+## Countrywise Expansion of the Chemical Space
+
+_A quick overview: Explore global trends in chemical research and discover how research output has grown in different countries. Learn more about key players in the field._
 
 ```{=html}
-<iframe width="720" height="1000" src="https://hq2s4t-santiago-garc0a0r0os.shinyapps.io/chemichal-space-quartopub/" loading = "lazy"></iframe>
+<iframe 
+  style="width: 100%; max-width: 900px; height: 1800px;" 
+  src="https://hq2s4t-santiago-garc0a0r0os.shinyapps.io/chemichal-space-quartopub/" 
+  loading="lazy">
+</iframe>
 ```
 
 ## Collaborations in the Chemical Space
 
 
 ```{=html}
-<iframe width="720" height="1000" src="https://hq2s4t-santiago-garc0a0r0os.shinyapps.io/collaborations-chemspace/" loading = "lazy"></iframe>
+<iframe width="900" height="2000" src="https://hq2s4t-santiago-garc0a0r0os.shinyapps.io/collaborations-chemspace/"></iframe>
+```
 
 
 
 ## Cite this
-
 
 
 ---
@@ -57,3 +57,4 @@ citation:
     - family: Restrepo
       given: Guillermo
 ---
+````

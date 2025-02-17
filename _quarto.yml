@@ -12,7 +12,7 @@ website:
       - text: "China’s rise in the CS"
         file: China-Chemical-Dominance.qmd
       - text: "Supplementary Materials"
-        file: supp.qmd  
+        file: sup.qmd  
   page-footer: 
     left: "https://chemrxiv.org/engage/chemrxiv/article-details/67920ada6dde43c908f688f6"
     right: 
@@ -26,16 +26,18 @@ format:
     grid: 
       body-width: 1350px
       sidebar-width: 200px
-      margin-width: 200px
-    toc: true
+      margin-width: 160px
+    toc: false
     theme: litera
     other-links:
-      - text: NASA Open Data
-        href: https://data.nasa.gov/
+      - text: "PDF"
+        icon: file-pdf
+        href: "https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/67920ada6dde43c908f688f6/original/china-s-rise-in-the-chemical-space-and-the-decline-of-us-influence.pdf"
     code-links:
-      - text: Data Import Code
+      - text: Data Code
         icon: file-code
-        href: data-import.py
+        href: "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/collabs_df_ds.csv"
+
 
 # Attach shinylive to every page
 filters:

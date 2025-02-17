@@ -14,6 +14,8 @@ filters:
 ## Supplementary Materials
 
 
+![](./figures/periodic_table.gif)
+
 ```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 1000
@@ -24,12 +26,12 @@ library(plotly)
 library(data.table)
 
 ######### Data Preparation #########
-# data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Rise/refs/heads/main/data/merged_figure1.csv"
-data_url <- "./data/fig_supplements_filtered.csv"
+data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/fig_supplements_filtered.csv"
+# data_url <- "./data/fig_supplements_filtered.csv"
 
 df <- fread(data_url) %>% 
   mutate(Country = as.factor(Country), source = as.factor(source)) %>%
-  filter(source != c("FigurS-2", "FigureS-4_organoMetallicKW", "FigureS-5", "FigureS-6", "FigureS-7a_b"))
+  filter(source != c("FigureS-2", "FigureS-4_organoMetallicKW", "FigureS-5", "FigureS-6", "FigureS-7a_b"))
 
 ######### Custom Labels #########
 figure_labels <- list(
@@ -67,7 +69,7 @@ ui <- fluidPage(
     card_body(
       selectInput("facet", "Select figure:",
                   choices = levels(df$source),
-                  selected = "FigureS-2",
+                  selected = "FigureS-5",
                   width = "100%"),
       
       sliderInput("year", "Year",
