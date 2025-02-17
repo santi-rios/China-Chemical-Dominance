@@ -264,21 +264,44 @@ final_df <- final_df %>% select(-X)
 write.csv(final_df, "./data/collabs_df_ds.csv", row.names = FALSE)  
 
 
-#########
+# CLEAN -----------
+
 library(tidyverse)
 library(countrycode)
 library(data.table)
 
 # Load Data Efficiently
-data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/collabs_df_ds.csv"
-df <- fread(data_url, na.strings = c("", "NA"))  
+# data_url <- "https://raw.githubusercontent.com/santi-rios/China-Chemical-Dominance/refs/heads/main/data/collabs_df_ds.csv"
+data_url <- "./data/co.csv"
+
+# df <- fread(data_url, na.strings = c("", "NA"))  
+df <- read.csv(data_url) 
+  # na.omit()
+
+# df <- df %>%
+#   na.omit()
+
+df <- df |> 
+  select(-"X")
 
 str(df)
+
+
+# Count NA values in each column using base R and lapply
+na_counts_base <- lapply(df, function(x) sum(is.na(x)))
+print(na_counts_base)
+
+# sample without replacement
+mysample <- df[sample(1:nrow(df), 1000,
+  replace=FALSE),]
+
+# Convert mysample to a data.table if it's not already
+setDT(mysample)
 
 # Convert ISO3 to ISO2, but keep the original ISO3 for later use
 # it needs to 
 # Generate proper ISO codes from CollabGroup names
-df[, iso2c := sapply(
+mysample[, iso2c := sapply(
   strsplit(CollabGroup, "-"),
   function(countries) {
     codes <- countrycode(countries, "country.name", "iso2c", warn = FALSE)
@@ -286,24 +309,33 @@ df[, iso2c := sapply(
   }
 )]
 
+## percentage ------
 
-# Convert ISO3 to ISO2
-# df[, iso2c := countrycode(iso3c, "iso3c", "iso2c", warn = FALSE)]
+df_clean <- mysample %>%
+  # Count how many countries are in each row (assumes "-" is the separator)
+  mutate(n_countries = str_count(CollabGroup, "-") + 1) %>%
+  # mutate(n_countries = str_count(CollabGroup, "-") + 1,
+         # Divide the row's Value equally among the countries
+        #  individual_value = Value / n_countries) %>%
+  # Separate rows so that each row contains one country
+  # separate_rows(CollabGroup, sep = "-") %>%
+  # Sum the individual contributions per country, per year, per subset (source)
+  group_by(source, Year, CollabGroup) %>%
+  summarise(total_contrib = sum(Value, na.rm = TRUE), .groups = "drop") %>%
+  # For each source and year, compute the total contribution
+  group_by(source, Year) %>%
+  mutate(year_total = sum(total_contrib, na.rm = TRUE),
+         percentage = total_contrib / year_total * 100) %>%
+  ungroup()
 
-# Compute Total Collaborations per Year
-total_per_year <- df[, .(TotalValue = sum(Value, na.rm = TRUE)), by = Year]
-df <- merge(df, total_per_year, by = "Year")
-df[, Percentage := (Value / TotalValue) * 100]
+### parcial, esta mal
+
+df_clean <- mysample |> 
+  mutate(Percentage = Percentage * 10000)
 
 
-# Compute Total Collaborations per Year
-total_per_year <- df[, .(TotalValue = sum(Value, na.rm = TRUE)), by = Year]
 
-# Merge the total values back into the original data
-df <- merge(df, total_per_year, by = "Year")
+write.csv(df_clean, "./data/collabs_sample.csv", row.names = FALSE)  
 
-# Compute the percentage of each collaboration group
-df[, Percentage := (Value / TotalValue) * 100]
 
-# Save the updated data
-write.csv(df, "./data/collabs_df_ds.csv", row.names = FALSE)
+
